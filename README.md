@@ -35,7 +35,19 @@ interactivity requirements
 - editable params
 	- internal noise per node 
 	- weights, delay per edge
-	
+- processing GUI libraries
+	- [ControlP5](http://www.sojamo.de/libraries/controlP5/) classic, clean
+		- lots of elements (including slider2d)
+		- dropdowns, radial dials
+	- [p5.gui](https://github.com/bitcraftlab/p5.gui)
+		- recent
+		- magic constructors -> likely fast to set up
+		- no 2D slider?
+	- [p5.touchgui](https://github.com/L05/p5.touchgui)
+		- last updated 2019
+		- has some nice elements (slider2d, joystick)
+
+
 visualization requirements
 - visual reflection of implicit params like weight, delay 
 - color of output signal blends colors of inputs!
@@ -48,6 +60,7 @@ import requirements
 - render graph as circles
 - edit connections via drag and drop
 - plot 1D signals `plotWave()`
+
 - colored latex from dynamics-visualizer-p5
 
 -----
@@ -55,8 +68,7 @@ import requirements
 project sidegoals 
 - could be an opportunity to use a library OTHER THAN p5, particularly for plotting 
 	- some mix of p5 for interaction, plotly for plotting?
-	- [controlp5](https://github.com/sojamo/controlp5) as a nice gui library
-		- has 2D sliders!
+
 
 
 
