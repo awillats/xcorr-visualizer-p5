@@ -1,7 +1,10 @@
 :root {
   --page-color: rgb(220,180,190);
   --ui-face-color: hsl(42, 60%, 80%); /* pale yellow*/
-  --ui-edge-color: rgb(0,0,0);
+  --ui-text-color: hsl(0, 0%, 0% );
+  --ui-edge-color: hsl(260, 5%, 5%);
+  --ui-light-edge-color: hsla(260, 15%,40%, 0.3);
+  --ui-back-color: hsl(42, 40%, 60%);
   --plot-edge-color: rgb(0,12,80);
 }
 

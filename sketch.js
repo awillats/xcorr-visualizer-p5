@@ -21,6 +21,7 @@ function draw() {
 
   update_all_ui();
   show_all_ui();
+  //noLoop();
 }
 
 // UI Functions

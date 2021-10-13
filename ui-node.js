@@ -1,13 +1,7 @@
 let all_ui_points = []
 
 
-function get_css_colors(){
-  var style = window.getComputedStyle(document.body)
-  //var style = document.querySelector(':root').style;
-  let default_fill_color = style.getPropertyValue('--ui-face-color')
-  let default_edge_color = style.getPropertyValue('--ui-edge-color')
-  return default_fill_color
-}
+
 
 function add_ui_node(node){
   all_ui_points.push(node)
@@ -27,42 +21,191 @@ function release_all_ui(){
   all_ui_points.forEach( function(item,index){ item.released(); } ); 
 }
 
-class PositionConstraint {
+// misc helper function 
+
+function get_ui_colors(){
+  var style = window.getComputedStyle(document.body)
+  //var style = document.querySelector(':root').style;
+  let color_spec = {
+   'face':style.getPropertyValue('--ui-face-color'),
+   'edge':style.getPropertyValue('--ui-edge-color'),
+   'light_edge':style.getPropertyValue('--ui-light-edge-color'),
+   'back':style.getPropertyValue('--ui-back-color'),
+   //'light_edge':style.getPropertyValue('--ui-edge-color'),
+  }
+  return color_spec
+}
+
+function fnum(num) {
+  return num.toFixed(1);
+}
+function round_by(val,step){
+  dv = val%step
+  if (dv>step/2.0){
+    dv -= step
+  }
+  return val-dv
+}
+
+function int_range(min_v,max_v=false){
+  //akin to numpy's range function, generates integers between min and max val
+  if (!max_v)
+  {
+    max_v = min_v
+    min_v = 0
+  }
+  return Array(max_v-min_v+1).fill().map((_,idx)=>min_v+idx)
+}
+
+////
+
+class LinearConstraint {
+  constructor(min,max,step=false)
+  {
+    this.min=min
+    this.max=max
+    this.step=step
+  }
+  shift(dv)
+  {
+    this.min+=dv
+    this.max+=dv
+  }
+  expand(dc)
+  {
+    this.min-=dv
+    this.max+=dv
+  }
+  scale(s){
+    this.min*=s
+    this.max*=s
+    if (this.step){
+      this.step*=s
+    }
+  }
+  range(){ return this.max-this.min }
+  center(){ return this.range()/2.0+this.min }
+  mapval(v,to_min=0.0, to_max=1.0){
+    return map(v, this.min, this.max, to_min, to_max)
+  }
+  dv(v) { return v-this.min }
+  bound(v){ return constrain(v, this.min, this.max) }
+  round_to_step(v)
+  {
+    if (!this.step) { return v }
+    return this.min + round_by( this.dv(v), this.step ) 
+  }
+  constrain(v){ 
+    return this.bound(this.round_to_step(v));
+    //return this.bound(v)
+  }
+  n_steps(){ 
+    if (!this.step) { return 0; }
+    return floor(this.range()/this.step);
+  }
+  index_to_step_val(idx){
+    return idx*this.step+this.min;
+  }
+  step_vals(){
+    if (!this.step) { return []; }
+    let step_indices = int_range(this.n_steps());
+    return step_indices.map( v => this.index_to_step_val(v) );
+  }
+  horiz_line(y) { line(this.min, y, this.max, y); }
+  vert_line(x) { line(x, this.min, x, this.max); }
+}
+
+////
+
+class BoxConstraint {
   constructor(xcon, ycon)
   {
     this.xcon=xcon;
     this.ycon=ycon;
   }
   constrain(x, y){
-    x = constrain(x, this.xcon.min, this.xcon.max);
-    y = constrain(y, this.ycon.min, this.ycon.max);
+    x = this.xcon.constrain(x)
+    y = this.ycon.constrain(y)
     return [x,y];
   }
+  minmin(){
+    return new p5.Vector(this.xcon.min,this.ycon.min)
+  }
+  maxmax(){
+    return new p5.Vector(this.xcon.max,this.ycon.max)
+  }
+  center(){
+    let diff_v = this.maxmax().sub(this.minmin()).div(2)
+    return diff_v.add(this.minmin())
+  }
+  midleft(){return new p5.Vector(this.xcon.min, this.ycon.center())}
+  width() {return this.xcon.range() }
+  height() {return this.ycon.range() }
   show(){
     push()
+    
+    push()
+    noFill()
+    stroke(color(get_ui_colors().light_edge))
+    // draw gridlines
+    this.xcon.step_vals().forEach(v => line(v, this.ycon.min, v, this.ycon.max ) ) 
+    this.ycon.step_vals().forEach(v => line(this.xcon.min, v, this.xcon.max, v ) ) 
+    pop()
+    //stroke(get_ui_colors().edge)
+    
     rectMode(CORNERS)
     rect(this.xcon.min, this.ycon.min, this.xcon.max, this.ycon.max)
+  
     pop()
   }
   //likely useless, want to think about constraining outer edge of circle to within bounds
   expand_constraints(dx,dy){
-    this.xcon.min-=dx
-    this.xcon.max+=dx
-    this.ycon.min-=dy
-    this.ycon.max+=dy
+    this.xcon.expand(dx);
+    this.ycon.expand(dy);
+  }
+  shift(dx=0.0, dy=0.0){
+    this.xcon.add(dx);
+    this.xcon.add(dy);
+  }
+  scale(xScale=1.0, yScale=1.0){
+    this.xcon.scale(xScale)
+    this.ycon.scale(yScale)
+  }
+  scaled_copy(xScale,yScale){
+    var scaled_clone = Object.assign({}, this);
+    scaled_clone.scale(xScale, yScale)
+    return scaled_clone
+  }
+  mapfrom_xy(x,y){
+    mx = this.xcon.map(x, 0.0, 1.0)
+    my = this.ycon.map(y, 0.0, 1.0)
   }
 }
 
+//
+
 class UINode extends Draggable {
-  constructor(x,y, node_color = get_css_colors()){
+  constructor(x,y, node_color = get_ui_colors().face){
     super(x, y, node_color)
     this.hw = 20;
     this.hh = this.hw;
-    this.color = node_color;
+    this.color = color(node_color);
 
     //this.position_constraints = constraints
-    this.position_constraints = new PositionConstraint({'min':0,'max':150},{'min':50,'max':150})
+    this.value_constraints = new BoxConstraint(
+      new LinearConstraint(0,10,1),
+      new LinearConstraint(-5,5,.1));
 
+    this.position_constraints = new BoxConstraint(
+      new LinearConstraint(50,450, 400/10),
+      new LinearConstraint(50,350,15));
+
+    if (this.position_constraints){
+      this.origin = this.position_constraints.midleft()
+      this.xScale = this.value_constraints.width()/this.position_constraints.width()
+      this.yScale = -this.value_constraints.height()/this.position_constraints.height()
+
+    }
   }
   drawCircle() { 
     ellipseMode(RADIUS)
@@ -77,11 +220,24 @@ class UINode extends Draggable {
   show() {
     if (this.position_constraints){
       noFill()
-      stroke(0)
+      stroke(get_ui_colors().light_edge)
       this.position_constraints.show()
+      push()
+      strokeWeight(2)
+      stroke(get_ui_colors().edge)
+      this.position_constraints.xcon.horiz_line(this.origin.y)
+      this.position_constraints.ycon.vert_line(this.origin.x)
+      pop()
+
     }
     super.show()
+    let val = this.getValue()
+    push()
+    rectMode(CENTER)
+    textAlign(CENTER)
+    fill(0)
+    textSize(20);
+    text(`${fnum(val.x)}, ${fnum(val.y)}`, this.x, this.y)
+    pop()
   }
 }
-
-
