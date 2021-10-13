@@ -1,6 +1,10 @@
 :root {
-    --page-color: #ded9e3;
+  --page-color: rgb(220,180,190);
+  --ui-face-color: hsl(42, 60%, 80%); /* pale yellow*/
+  --ui-edge-color: rgb(0,0,0);
+  --plot-edge-color: rgb(0,12,80);
 }
+
 html, body {
   margin: 0;
   padding: 0;
@@ -9,8 +13,8 @@ html, body {
 }
 
 canvas {
+  /* center canvas in the window */
     display: block;
-
     padding-left: 0;
     padding-right: 0;
     margin-left: auto;

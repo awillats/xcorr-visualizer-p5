@@ -35,19 +35,41 @@ interactivity requirements
 - editable params
 	- internal noise per node 
 	- weights, delay per edge
+    - could visualize weights and delay as a synaptic waveform ?
+
+- could have GUI simply be draggable points
+  - with contrained limits, background squares   
+
 - processing GUI libraries
-	- [ControlP5](http://www.sojamo.de/libraries/controlP5/) classic, clean
-		- lots of elements (including slider2d)
-		- dropdowns, radial dials
+	- [p5.touchgui](https://github.com/L05/p5.touchgui)
+		- last updated 2019
+		- has some nice elements (slider2d, joystick)
 	- [p5.gui](https://github.com/bitcraftlab/p5.gui)
 		- recent
 		- magic constructors -> likely fast to set up
 		- no 2D slider?
-	- [p5.touchgui](https://github.com/L05/p5.touchgui)
-		- last updated 2019
-		- has some nice elements (slider2d, joystick)
+	- (x) DOESNT actually work with p5 it seems
+    - [ControlP5](http://www.sojamo.de/libraries/controlP5/) classic, clean
+		- lots of elements (including slider2d)
+		- dropdowns, radial dials
+- javascript GUI libraries
+  - [oui](https://github.com/wearekuva/oui)
+      - has 2d, XYpad
+  - [ControlKit]()
+    - has 2d slider (XYpad) 
+        `panel.addPad(object,propertyKey,options) -> {Panel}`
+    - has function plotter!j
 
-
+  - [Control-Panel](https://github.com/freeman-lab/control-panel)
+    - nicely themed, only minimal inputs
+  - [simple 2d slider in js, with jQuery?](https://codepen.io/tyler-murphy/pen/tHsAu?editors=1010)
+  - [Tweakpane](https://cocopon.github.io/tweakpane://cocopon.github.io/tweakpane/)
+    - looks nice, minimal, foldable 
+    - [p5 + tweakpane example](https://replit.com/@jgordon510/p5-example-with-tweakpane#script.js)
+      - [reddit discussion](https://www.reddit.com/r/p5js/comments/pnkn5s/tweakpane_for_p5js/) 
+ - see also graphing libraries
+  - [graphica](https://github.com/jagracar/grafica.js)
+      - [demos](http://jsfiddle.net/user/jagracar/fiddles/)
 visualization requirements
 - visual reflection of implicit params like weight, delay 
 - color of output signal blends colors of inputs!

@@ -1,6 +1,9 @@
-[ ] import basic processing sketch structure
-	[ ] set folders, helper scripts
+[x] import basic processing sketch structure
+	[x] set folders, helper scripts
 [ ] sketch out GUI elements
+
+[~] import drawWave, Points.js
+  - requires gh-pages .io link to act as content-delivery-network
 [ ] plot any signal 
 [ ] generate signal buffers
 	[ ] figure out how `circuit-viz` does it
@@ -14,6 +17,7 @@
 ---
 
 ( ) think about theme 
-	( ) make sure variables are CSS stylable
+	(~) make sure variables are CSS stylable
  
+
 
