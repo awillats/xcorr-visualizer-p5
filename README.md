@@ -1,13 +1,18 @@
-! Work in progress !
+
+🚧  Work in progress 🚧 
 
 intended to view how correlations between outputs of small networks vary as a function of simple paramters 
 
 notably, this project should import some rendering and generation capability from `circuit-visualizer-p5`
 but this project is small enough in scope, it's core pieces should be fine without.
-~~~~~~~~
+
+-----
+
 Core expected result:
-- 
-~~~~~
+- (...)
+
+-----
+
 methods requirements
 - generate random signals w/ given structural causal model
 	- random numbers, delays
@@ -45,7 +50,7 @@ import requirements
 - plot 1D signals `plotWave()`
 - colored latex from dynamics-visualizer-p5
 
-~~~~~~~~~~~~~~~~~~~
+-----
 
 project sidegoals 
 - could be an opportunity to use a library OTHER THAN p5, particularly for plotting 
