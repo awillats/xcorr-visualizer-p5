@@ -1,0 +1,19 @@
+:root {
+    --page-color: #ded9e3;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--page-color);
+
+}
+
+canvas {
+    display: block;
+
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
