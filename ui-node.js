@@ -182,7 +182,7 @@ class BoxConstraint {
   }
 }
 
-//
+/////
 
 class UINode extends Draggable {
   constructor(x,y, node_color = get_ui_colors().face){
@@ -197,8 +197,8 @@ class UINode extends Draggable {
       new LinearConstraint(-5,5,.1));
 
     this.position_constraints = new BoxConstraint(
-      new LinearConstraint(50,450, 400/10),
-      new LinearConstraint(50,350,15));
+      new LinearConstraint(50,150),
+      new LinearConstraint(50,150));
 
     if (this.position_constraints){
       this.origin = this.position_constraints.midleft()
