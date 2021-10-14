@@ -10,7 +10,11 @@
 [ ] compute cross-correlation
 [ ] plot xcorr
 [ ] add edittable params
-[ ] add noise modes 
+  [x] constrained draggable points
+[ ] add noise modes
+  - perlin
+  - gaussian
+  - (sum of) Poisson
 [ ] add frozen-vs-buffering
 
 
