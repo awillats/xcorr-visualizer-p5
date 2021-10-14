@@ -1,22 +1,26 @@
-[x] import basic processing sketch structure
-	[x] set folders, helper scripts
-[ ] sketch out GUI elements
-
+[.] generate signal buffers
+	[ ] figure out how `circuit-viz` does it
+  [~] sketch out containers for signals 
+  [ ] 
+[.] plot any signal 
+[.] sketch out GUI elements
+  - container for 2D slider
 [~] import drawWave, Points.js
   - requires gh-pages .io link to act as content-delivery-network
-[ ] plot any signal 
-[ ] generate signal buffers
-	[ ] figure out how `circuit-viz` does it
 [ ] compute cross-correlation
-[ ] plot xcorr
+  [ ] plot xcorr
 [ ] add edittable params
   [x] constrained draggable points
+  - fix step increment based on value *not* pixel coordinate
+  [ ] use meteor to plot history of parameter
 [ ] add noise modes
   - perlin
   - gaussian
   - (sum of) Poisson
 [ ] add frozen-vs-buffering
 
+[x] import basic processing sketch structure
+	[x] set folders, helper scripts
 
 ---
 

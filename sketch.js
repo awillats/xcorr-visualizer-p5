@@ -13,6 +13,9 @@ function setup() {
   set_style_prop('--page-color',lightenColor(bgColor, .9))
   // set up GUI elements
   add_ui_node(new UINode(width/3,height/2))
+
+  g = new GaussianGenerator(0,1);
+  print(g.gen(100))
 }
 
 
