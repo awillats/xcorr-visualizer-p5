@@ -1,8 +1,8 @@
-[.] generate signal buffers
-	[ ] figure out how `circuit-viz` does it
+[~] generate signal buffers
   [~] sketch out containers for signals 
   [ ] 
-[.] plot any signal 
+	( ) figure out how `circuit-viz` does it
+[x] plot any signal 
 [.] sketch out GUI elements
   - container for 2D slider
 [~] import drawWave, Points.js
@@ -13,11 +13,14 @@
   [x] constrained draggable points
   - fix step increment based on value *not* pixel coordinate
   [ ] use meteor to plot history of parameter
-[ ] add noise modes
-  - perlin
-  - gaussian
-  - (sum of) Poisson
-[ ] add frozen-vs-buffering
+ 
+
+
+[x] add noise modes
+  - [x] perlin
+  - [x] gaussian
+  - [x] (sum of) Poisson
+[x] add frozen-vs-buffering
 
 [x] import basic processing sketch structure
 	[x] set folders, helper scripts

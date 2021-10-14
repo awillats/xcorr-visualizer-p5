@@ -86,14 +86,8 @@ class PerlinGenerator extends SignalGenerator {
     this.dx = dx;
     this.noise_scale = noise_scale;
     
-
-    this.x0 = ( x0 ? x0 : rand_start() );
-    if (!x0) {
-      this.x0 = rand_start()   
-    }
-    else{
-      this.x0 = x0;
-    }
+    this.i = 0;
+    this.x0 = ( x0 ? x0 : this.rand_start() );
 
 
   }
@@ -103,9 +97,12 @@ class PerlinGenerator extends SignalGenerator {
     return this.x0;
   }
 
-  gen_sample(i)
+  gen_sample(i=false)
   {
-    return noise( ( this.x0 + i * this.dx ) * this.noise_scale )
+    i = (i ? i : this.i)
+    i = this.i;
+    this.i++
+    return noise( (this.x0 + i*this.dx) * this.noise_scale )
   }
   gen(nt, do_rand_start = false)
   {

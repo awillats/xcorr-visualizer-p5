@@ -190,54 +190,119 @@ class UINode extends Draggable {
     this.hw = 20;
     this.hh = this.hw;
     this.color = color(node_color);
-
-    //this.position_constraints = constraints
-    this.value_constraints = new BoxConstraint(
-      new LinearConstraint(0,10,1),
-      new LinearConstraint(-5,5,.1));
-
-    this.position_constraints = new BoxConstraint(
-      new LinearConstraint(50,150),
-      new LinearConstraint(50,150));
-
-    if (this.position_constraints){
-      this.origin = this.position_constraints.midleft()
-      this.xScale = this.value_constraints.width()/this.position_constraints.width()
-      this.yScale = -this.value_constraints.height()/this.position_constraints.height()
-
-    }
   }
-  drawCircle() { 
-    ellipseMode(RADIUS)
-    ellipse(this.x, this.y, this.hh)
+//  drawCircle() { 
+//    ellipseMode(RADIUS)
+//    ellipse(this.x, this.y, this.hh)
+//  }
+  _draw_node_()
+  {
+    super.show();
   }
-  update() {
-    super.update();
-    if (this.position_constraints){
-      [this.x,this.y] = this.position_constraints.constrain(this.x,this.y)
-    }
-  }
-  show() {
-    if (this.position_constraints){
-      noFill()
-      stroke(get_ui_colors().light_edge)
-      this.position_constraints.show()
-      push()
-      strokeWeight(2)
-      stroke(get_ui_colors().edge)
-      this.position_constraints.xcon.horiz_line(this.origin.y)
-      this.position_constraints.ycon.vert_line(this.origin.x)
-      pop()
-
-    }
-    super.show()
-    let val = this.getValue()
+  draw_text(str){
     push()
     rectMode(CENTER)
     textAlign(CENTER)
     fill(0)
     textSize(20);
-    text(`${fnum(val.x)}, ${fnum(val.y)}`, this.x, this.y)
+    text(str, this.x, this.y)
     pop()
   }
+  show() {
+    super.show()
+    let val = this.getValue()
+    this.draw_text( `${fnum(val.x)}, ${fnum(val.y)}` )
+  }
 }
+class Slider1D extends UINode {
+  constructor(x, y, is_vertical = true , node_color = get_ui_colors().face) {
+    super (x,y, node_color)
+    this.value_constraints = new LinearConstraint(0, 1);
+    let v = (is_vertical ? y : x)
+    this.position_constraints = new LinearConstraint(v-50, v+50);
+    this.is_vertical = is_vertical
+    
+    let con_min = this.position_constraints.max;
+    let xo = (this.is_vertical ? x : this.position_constraints.min );
+    let yo = (this.is_vertical ? this.position_constraints.max : y );
+    this.origin = new p5.Vector(xo, yo)
+
+    this.xScale = this.value_constraints.range()/this.position_constraints.range()
+    this.yScale = -this.value_constraints.range()/this.position_constraints.range()
+  }
+  pos(){
+    return (this.is_vertical ? this.y : this.x)
+  }
+  update(){
+    super.update()
+    if ( this.is_vertical ){
+      this.x = this.origin.x;
+      this.y = this.position_constraints.constrain(this.y);
+    }
+    else{
+      this.x = this.position_constraints.constrain(this.x);
+      this.y = this.origin.y;
+    }
+  }
+  show(){
+    push()
+    noFill();
+    strokeWeight(2);
+    stroke(get_ui_colors().edge);
+
+    if ( this.is_vertical ){
+      this.position_constraints.vert_line(this.origin.x);
+    }
+    else{
+      this.position_constraints.horiz_line(this.origin.y);
+    }
+    pop()
+    super._draw_node_();
+    //super.show();
+    let val = this.getValue()
+    let relevant_val = (this.is_vertical ? val.y : val.x)
+    this.draw_text( `${fnum(relevant_val)}` )
+
+  }
+}
+
+//
+
+class Slider2D extends UINode {
+  constructor(x,y, node_color = get_ui_colors().face) {
+    super (x,y, node_color)
+    this.value_constraints = new BoxConstraint(
+      new LinearConstraint(0,10,1),
+      new LinearConstraint(-5,5,.1));
+
+    this.position_constraints = new BoxConstraint(
+      new LinearConstraint(x, x+100),
+      new LinearConstraint(y-50, y+50));
+
+    if (this.position_constraints){
+      this.origin = this.position_constraints.midleft()
+      this.xScale = this.value_constraints.width()/this.position_constraints.width()
+      this.yScale = -this.value_constraints.height()/this.position_constraints.height()
+    }
+  }
+  update() {
+    super.update();
+    [this.x,this.y] = this.position_constraints.constrain(this.x,this.y)
+  }
+
+  show() {
+    noFill()
+    stroke(get_ui_colors().light_edge)
+    this.position_constraints.show()
+
+    push()
+    strokeWeight(2)
+    stroke(get_ui_colors().edge)
+    this.position_constraints.xcon.horiz_line(this.origin.y)
+    this.position_constraints.ycon.vert_line(this.origin.x)
+    pop()
+
+    super.show();
+  }
+}
+
