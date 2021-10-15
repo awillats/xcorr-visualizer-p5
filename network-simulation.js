@@ -57,6 +57,14 @@ class NetNode{
     this.record();
     return this.x;
   }
+  reset( rand_noise = true )
+  {
+    this.x = 0;
+    if ( ( this.noise_gen instanceof PerlinGenerator  ) && ( rand_noise ) )
+    {
+      this.noise_gen.rand_start();
+    }
+  }
   record() { this.x_history.cycle_in(this.x); }
   x_prev() { return this.x_history.last(); }
   reset_history() {  this.x_history.signal.fill(0.0) }
@@ -70,7 +78,7 @@ class Network{
     this.weights = new CircuitMat( n_nodes , gen_chain);
     this.weights.scale(w);
     this.delays = new CircuitMat( n_nodes , (n)=>nj.ones([n,n]));
-    this.reset_state();
+    this.reset_nodes();
   }
   get_state()
   {
@@ -105,9 +113,9 @@ class Network{
     this.nodes.forEach( n => n.sim() );
     return this.get_state();
   }
-  reset_state()
+  reset_nodes( rand_noise = true )
   {
-    this.nodes.forEach( n => n.x=0 );
+    this.nodes.forEach( n => n.reset(rand_noise=true) );
   }
   plot_node(idx, x0=null, y0=null, xScale=null, yScale=null)
   {
@@ -119,8 +127,9 @@ class Network{
 // helper functions
 
 
-function print_mat(mat)
+function print_mat(mat, print_len = 10)
 {
+  nj.config.printThreshold = print_len
   console.log(mat.toString())
 }
 function gen_diag(v, k=0)

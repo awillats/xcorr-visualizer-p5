@@ -1,9 +1,21 @@
-[ ] generate strucutral network model 
-  [ ] topological sorted weight matrix
+[~] generate strucutral network model 
+  [~] topological sorted weight matrix
+    don't need topo sort if previous state is used for update
+  [x] reciprocal conncections can work!  
   (?) figure out adj mat convention from circuit visualizer 
 
 [ ] compute cross-correlation
-  [ ] plot xcorr
+  [x] port numpy's other convolution modes to numjs
+  [ ] plot xcorr (as a function of lags)
+  ( ) plot fixed-lag xcorr
+    ( )  add scatterplot to plotFunctions.js
+  ( ) normalize cross-corr by autocorr
+
+
+[ ] connect UI to synaptic weights
+  ( ) delays
+  ( ) noise levels
+    ( ) noise timescales? Perlin as special case?
 
 [~] generate signal buffers
   [~] sketch out containers for signals 

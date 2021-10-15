@@ -8,6 +8,10 @@ let hor;
 
 let test_circuit
 
+
+let n_nodes = 3;
+
+
 let running = true;
 
 function preload() {
@@ -17,8 +21,13 @@ function setup() {
   createCanvas(800, 600);
 
   test_circuit = new Network(3);
-  test_circuit.nodes.forEach( n=> n.noise_gen = new PerlinGenerator(dx=0.01,noise_scale=10.0))
 
+  test_circuit.weights.mat = nj.array( [[0,1,0],[1,0,0],[0,0,0]]); //can this circuit handle reciprocal connections?
+  test_circuit.weights.scale(-0.75);
+ 
+  test_circuit.nodes.forEach( n=> {
+    n.noise_gen = new PerlinGenerator(dx=0.01,noise_scale=10.0)
+    });
 
   // talk to css, set background color
 
@@ -27,7 +36,6 @@ function setup() {
   // set up GUI elementsi
   p = new Slider2D(width/3, height/2)
   lin = new Slider1D(width/4, height/2, is_vertical=true)
-  console.log('was vertical, now horiz')
   hor = new Slider1D( width/3+50, height/2+100, is_vertical=false)
 
   //g = new GaussianGenerator(0,1);
@@ -67,10 +75,13 @@ function draw() {
   //sb.plot( p.position_constraints.xcon.max, p.position_constraints.ycon.center(), 0.1, -5);
   //sb.plot( p.position_constraints.xcon.max, p.position_constraints.ycon.max, 0.1, -1);
   sb.plot( p.position_constraints.xcon.max, p.position_constraints.ycon.max, 0.1, -100);
-  let net_scale = -20;
-  test_circuit.plot_node(0, width/4,height-150 ,1, net_scale ) 
+
+
+  //plot network signals 
+  let net_scale = (test_circuit.nodes[0].noise_gen instanceof PerlinGenerator ? -20 : -5); //-20 if perlin
+  test_circuit.plot_node(0, width/4,height-130 ,1, net_scale ) 
   test_circuit.plot_node(1, width/4,height-100 ,1, net_scale ) 
-  test_circuit.plot_node(2, width/4,height-50 ,1, net_scale ) 
+  test_circuit.plot_node(2, width/4,height-70 ,1, net_scale ) 
   pop()
 }
 
