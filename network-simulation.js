@@ -1,166 +1,161 @@
-/*
- * (~) generate a random signal of a fixed length
- * ( ) plot it
- * ( ) add signal length to buffer class
- *
- *
- */
+// https://github.com/awillats/circuit-visualizer-p5/blob/main/AdjMat.js
 
-function plot1DArray(ary, x0 = 0.0, y0 = 0.0, xScale = 1.0, yScale = -1.0){
-  //could do this scaling with a map instead
-  push();
-  beginShape();
-  noFill();
-  ary.forEach((item,i)=>{
-    //vertex( (i+x0)*xScale, (item+y0)*yScale ) 
-    vertex( (i*xScale + x0), (item*yScale + y0) ) 
-  });
-  endShape();
-  pop();
-}
-function plotVecArray(vAry, v0=createVector(0,0))
-{
-    beginShape();
-    noFill();
-    vAry.forEach((item, i) => {
-        //console.log(i)
-        vertex(item.x+v0.x, item.y+v0.y)
-    });
-    endShape();
-}
 
-class SignalBuffer{
-  constructor(len){
-    this.len = len;
-    this.signal = Array(len);
-    //have default x and y scales?
-  }
-  set_from_array(v_ary)
-  { 
-    this.signal = v_ary;
-    this.len = v_ary.length;
-  }
-  plot(x0 = 0.0, y0 = 0.0 , xScale = 1.0 , yScale = -1.0){
-    //plotVecArray(this.signal, new p5.Vector(x0, y0));
-    plot1DArray(this.signal, x0, y0, xScale, yScale);
-  }
-  enque( val ) { this.signal.push(val); }
-  deque() { this.signal.shift(); }
-  cycle_in( val )
+class CircuitMat{
+  constructor( n_nodes , mat_gen_fun=false)
   {
-    this.enque(val);
-    this.deque();
-  }
-}
-
-
-//does signal generator contain the whole network?
-class SignalGenerator{
-  //consider turning this into an abstract base class:
-  //https://stackoverflow.com/questions/597769/how-do-i-create-an-abstract-base-class-in-javascript
-  constructor()
-  {
-  }
-}
-
-class GaussianGenerator extends SignalGenerator {
-  constructor(mu=0.0, sigma=1.0)
-  {
-    super();
-    this.mu = mu;
-    this.sigma = sigma;
-  }
-  gen_sample()
-  {
-    return randomGaussian(this.mu, this.sigma)
-  }
-  gen(nt)
-  {
-    return Array(nt).fill().map( this.gen_sample , this)
-  }
-}
-
-class PerlinGenerator extends SignalGenerator {
-  constructor(dx = 0.01, noise_scale=1.0, x0=false){
-    super();
-    this.dx = dx;
-    this.noise_scale = noise_scale;
-    
-    this.i = 0;
-    this.x0 = ( x0 ? x0 : this.rand_start() );
-
-
-  }
-  rand_start()
-  {
-    this.x0 = random(-100,100);
-    return this.x0;
-  }
-
-  gen_sample(i=false)
-  {
-    i = (i ? i : this.i)
-    i = this.i;
-    this.i++
-    return noise( (this.x0 + i*this.dx) * this.noise_scale )
-  }
-  gen(nt, do_rand_start = false)
-  {
-    if (do_rand_start) { this.rand_start() }
-    return Array(nt).fill().map( (_,i) => this.gen_sample(i), this )
-  }
-}
-
-class PoissonGenerator extends SignalGenerator {
-  constructor( lambda = 0.1 ) {
-    super();
-    this.lambda = lambda;
-  }
-  gen_sample()
-  {
-    //using inverse transform sampling algo. from wikipedia:
-    // https://en.wikipedia.org/wiki/Poisson_distribution#Generating_Poisson-distributed_random_variables
-    let x = 0;
-    let p = exp( -this.lambda );
-    let s = p;
-    let u = random()
-
-    while (u > s){
-      x++;
-      p *= this.lambda/x;
-      s += p;
+    //super(n_nodes);
+    this.n_nodes = n_nodes;
+    //this.mat = this.binaryToMat('010'+'001'+'000')
+    if (mat_gen_fun){
+      this.mat = mat_gen_fun(n_nodes);
     }
-    return x;
+    else{
+      this.mat = gen_chain( n_nodes ); 
+    }
+    //this.print();
   }
-  gen( nt ){
-    return Array(nt).fill().map( this.gen_sample, this );
+  print()
+  {
+    print_mat(this.mat);
+  }
+  scale(s)
+  {
+    this.mat = this.mat.multiply(s);
+    return this.mat;
   }
 }
 
-class MultiPoissonGenerator extends PoissonGenerator {
-  constructor( lambda = 0.1, n = 1)
-  {
-    super(lambda);
-    this.n = n;
+class NetNode{
+  constructor( noise_gen = false){
+
+    this.noise_gen = noise_gen || new GaussianGenerator(0,1);
+    this.x = 0.0 ;
+    this.bias = 0.0;
+    this.curr_input = 0.0;
+
+    let hist_len = 500;
+    this.x_history = new SignalBuffer( hist_len );
+    this.reset_history();
   }
-  gen_sample( do_avg = false)
+  noise()
   {
-    let vals = Array(this.n).fill().map( super.gen_sample, this );
-    //compute the sum
-    let sum = vals.reduce( (a,b) => a+b, 0)
-    return ( do_avg ? sum/this.n : sum ) 
+    return this.noise_gen.gen_sample();
   }
-  gen( nt , do_avg = false)
+  stim( input )
   {
-    return Array(nt).fill().map( _=>this.gen_sample(do_avg), this);
+    //may be called multiple times a timestep to accumulate stim.
+    this.curr_input += input;
+  }
+  sim( input=0.0 )
+  {
+    this.stim( input );
+    // for now, no autoregression
+    // x = u + n, rather than x = Ax + u + n
+    this.x = this.curr_input + this.noise() + this.bias; 
+    this.curr_input = 0.0;
+    this.record();
+    return this.x;
+  }
+  record() { this.x_history.cycle_in(this.x); }
+  x_prev() { return this.x_history.last(); }
+  reset_history() {  this.x_history.signal.fill(0.0) }
+}
+
+class Network{
+  constructor( n_nodes = 3, w=1.0)
+  {
+    this.n_nodes = n_nodes;
+    this.nodes = Array(n_nodes).fill().map( _=> new NetNode() ) ;
+    this.weights = new CircuitMat( n_nodes , gen_chain);
+    this.weights.scale(w);
+    this.delays = new CircuitMat( n_nodes , (n)=>nj.ones([n,n]));
+    this.reset_state();
+  }
+  get_state()
+  {
+    return this.nodes.map( n=>n.x );
   }
 
+  apply_net_currents()
+  {
+
+    this.nodes.forEach( (n_src, i) => {
+      //follows dyn. sys. convention
+      let weight_row = index_mat(this.weights.mat, i, null);
+      let delay_row = index_mat(this.delays.mat, i, null);
+      //print_mat(weight_row)
+      this.nodes.forEach( (n_target,j) => {
+        let w = weight_row.get(0, j);
+        let d = delay_row.get(0, j);
+        //print(w)
+        if (w != 0){
+          let x_past = n_src.x_history.get_delayed(d)
+          //print(`from ${i} to ${j}`);
+          //print(x_past);
+          n_target.stim( x_past*w ); 
+        }
+      });
+
+    });
+  }
+  sim()
+  {
+    this.apply_net_currents();
+    this.nodes.forEach( n => n.sim() );
+    return this.get_state();
+  }
+  reset_state()
+  {
+    this.nodes.forEach( n => n.x=0 );
+  }
+  plot_node(idx, x0=null, y0=null, xScale=null, yScale=null)
+  {
+    this.nodes[idx].x_history.plot(x0,y0,xScale,yScale);
+  }
 }
 
 
+// helper functions
 
 
+function print_mat(mat)
+{
+  console.log(mat.toString())
+}
+function gen_diag(v, k=0)
+{
+  if (k==0) return nj.diag(v);
 
+  let n = v.length + abs(k);// + k;
+  let mat = nj.zeros([n,n]);
+ 
+  if (k>0){
+    v.forEach( (x,i)=> mat.set(i+k,i,x));
+  }
+  else{
+    v.forEach( (x,i)=> mat.set(i,i-k,x));
+  }
+  print_mat(mat);
+  return mat;
+}
 
-
-
+function gen_chain(n, val=1.0, offset=-1)
+{
+  //offset = -1 corresponds to dyn. convention
+  return gen_diag( Array(n-abs(offset)).fill(val), offset);
+}
+function index_mat(mat, I, J)
+{
+  if ( I!=null && !Array.isArray(I) ){ I = [I,I+1]; };
+  if ( J!=null && !Array.isArray(J) ){ J = [J,J+1]; };
+  return mat.slice(I,J); 
+}
+function get_row(mat, i)
+{
+  return mat.slice([i,i+1], null)
+}
+function get_column(mat,j)
+{
+  return mat.slice(null, [j,j+1])
+}

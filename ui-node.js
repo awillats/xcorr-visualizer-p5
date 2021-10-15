@@ -190,6 +190,7 @@ class UINode extends Draggable {
     this.hw = 20;
     this.hh = this.hw;
     this.color = color(node_color);
+    add_ui_node( this );
   }
 //  drawCircle() { 
 //    ellipseMode(RADIUS)

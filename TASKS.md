@@ -1,15 +1,24 @@
-[~] generate signal buffers
-  [~] sketch out containers for signals 
-  [ ] 
-	( ) figure out how `circuit-viz` does it
-[x] plot any signal 
-[.] sketch out GUI elements
-  - container for 2D slider
-[~] import drawWave, Points.js
-  - requires gh-pages .io link to act as content-delivery-network
+[ ] generate strucutral network model 
+  [ ] topological sorted weight matrix
+  (?) figure out adj mat convention from circuit visualizer 
+
 [ ] compute cross-correlation
   [ ] plot xcorr
-[ ] add edittable params
+
+[~] generate signal buffers
+  [~] sketch out containers for signals 
+	( ) figure out how `circuit-viz` does it
+
+[x] plot any signal 
+
+[.] sketch out GUI elements
+  - container for 2D slider
+    - (~) refactor slider as extension of node
+    - (~) add additional linear slider
+
+[~] import drawWave, Points.js
+  - requires gh-pages .io link to act as content-delivery-network
+[~] add edittable params
   [x] constrained draggable points
   - fix step increment based on value *not* pixel coordinate
   [ ] use meteor to plot history of parameter

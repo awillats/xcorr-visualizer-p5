@@ -6,6 +6,8 @@ let p;
 let lin;
 let hor;
 
+let test_circuit
+
 let running = true;
 
 function preload() {
@@ -13,7 +15,11 @@ function preload() {
 
 function setup() {
   createCanvas(800, 600);
-  
+
+  test_circuit = new Network(3);
+  test_circuit.nodes.forEach( n=> n.noise_gen = new PerlinGenerator(dx=0.01,noise_scale=10.0))
+
+
   // talk to css, set background color
 
   bgColor = get_style_prop('--page-color')
@@ -23,9 +29,6 @@ function setup() {
   lin = new Slider1D(width/4, height/2, is_vertical=true)
   console.log('was vertical, now horiz')
   hor = new Slider1D( width/3+50, height/2+100, is_vertical=false)
-  add_ui_node(p);
-  add_ui_node(lin);
-  add_ui_node(hor);
 
   //g = new GaussianGenerator(0,1);
   g = new PerlinGenerator( dx = 0.01, noise_scale = 1.0 );
@@ -55,6 +58,7 @@ function draw() {
       //sb.cycle_in( g.gen_sample(true) );
       sb.cycle_in( g.gen_sample() );
     });
+    test_circuit.sim();
   }
   push()
   colorMode( HSB, 360, 100, 100 );
@@ -63,6 +67,10 @@ function draw() {
   //sb.plot( p.position_constraints.xcon.max, p.position_constraints.ycon.center(), 0.1, -5);
   //sb.plot( p.position_constraints.xcon.max, p.position_constraints.ycon.max, 0.1, -1);
   sb.plot( p.position_constraints.xcon.max, p.position_constraints.ycon.max, 0.1, -100);
+  let net_scale = -20;
+  test_circuit.plot_node(0, width/4,height-150 ,1, net_scale ) 
+  test_circuit.plot_node(1, width/4,height-100 ,1, net_scale ) 
+  test_circuit.plot_node(2, width/4,height-50 ,1, net_scale ) 
   pop()
 }
 
