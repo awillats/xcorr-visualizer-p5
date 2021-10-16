@@ -34,7 +34,7 @@ class NetNode{
     this.bias = 0.0;
     this.curr_input = 0.0;
 
-    let hist_len = 500;
+    let hist_len = 1100; //qualitative threshold in speed >=1200
     this.x_history = new SignalBuffer( hist_len );
     this.reset_history();
   }
@@ -117,9 +117,13 @@ class Network{
   {
     this.nodes.forEach( n => n.reset(rand_noise=true) );
   }
-  plot_node(idx, x0=null, y0=null, xScale=null, yScale=null)
+  node_output(idx)
   {
-    this.nodes[idx].x_history.plot(x0,y0,xScale,yScale);
+    return [...this.nodes[idx].x_history.signal];
+  }
+  plot_node(idx, numpts=null, x0=null, y0=null, xScale=null, yScale=null)
+  {
+    this.nodes[idx].x_history.plot(x0,y0,xScale,yScale, numpts);
   }
 }
 

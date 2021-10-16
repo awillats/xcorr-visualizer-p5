@@ -13,6 +13,14 @@ Core expected result:
 
 -----
 
+Early Findings
+- finer auto-correlations mean easier connectivity inference
+- how you normalize matters more when signals are more different from each other (i.e. normalizing in reciprocal circuits)
+- buffer lenghts longer than ~2k(5k) significantly slow-down script
+   - likely xcorr not rendering
+
+-----
+
 methods requirements
 - generate random signals w/ given structural causal model
 	- random numbers, delays

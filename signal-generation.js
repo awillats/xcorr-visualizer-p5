@@ -28,7 +28,6 @@ function plotVecArray(vAry, v0=createVector(0,0))
     });
     endShape();
 }
-
 class SignalBuffer{
   constructor(len){
     this.len = len;
@@ -40,9 +39,14 @@ class SignalBuffer{
     this.signal = v_ary;
     this.len = v_ary.length;
   }
-  plot(x0 = 0.0, y0 = 0.0 , xScale = 1.0 , yScale = -1.0){
+  plot(x0 = 0.0, y0 = 0.0 , xScale = 1.0 , yScale = -1.0, numpts = false){
     //plotVecArray(this.signal, new p5.Vector(x0, y0));
-    plot1DArray(this.signal, x0, y0, xScale, yScale);
+    let signal = this.signal;
+    if (numpts)
+    {
+      signal = get_last(this.signal, numpts);
+    }
+    plot1DArray(signal, x0, y0, xScale, yScale);
   }
   enque( val ) { this.signal.push(val); }
   deque() { this.signal.shift(); }
@@ -146,19 +150,21 @@ class PoissonGenerator extends SignalGenerator {
 }
 
 class MultiPoissonGenerator extends PoissonGenerator {
-  constructor( lambda = 0.1, n = 1)
+  constructor( lambda = 0.1, n = 1, do_avg = false)
   {
     super(lambda);
     this.n = n;
+    this.do_avg = do_avg;
   }
-  gen_sample( do_avg = false)
+  gen_sample( do_avg = null)
   {
+    if (do_avg == null) { do_avg = this.do_avg; };
     let vals = Array(this.n).fill().map( super.gen_sample, this );
     //compute the sum
     let sum = vals.reduce( (a,b) => a+b, 0)
     return ( do_avg ? sum/this.n : sum ) 
   }
-  gen( nt , do_avg = false)
+  gen( nt , do_avg = null)
   {
     return Array(nt).fill().map( _=>this.gen_sample(do_avg), this);
   }
