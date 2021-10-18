@@ -1,21 +1,26 @@
-[.] compute cross-correlation
+[[ ]] connect UI to synaptic weights
+  (! ) noise levels
+    ( ) gaussian - simple to specify 
+    ( ) noise timescales? Perlin as special case?
+  ( ) weights
+  ( ) delays
+    - implementation of delay doesnt seem to work with non-uniform scaling?
+    (x) prove to myself delay impacts the shape of xcorr,
+      at least in non-reciprocal circuits
+  !? would be nice to overlay control directly on the xcorr!
+
+[~] compute cross-correlation
   [x] port numpy's other convolution modes to numjs
   [~] plot xcorr (as a function of lags)
-    [[ ]] plot all xcorr
+    [[~]] plot all xcorr
       - excise demo code (to demo.js?) to make room for xcorr matrix 
       - increase buffer length
   ( ) plot fixed-lag xcorr
     ( )  add scatterplot to plotFunctions.js
   (!) normalize cross-corr by autocorr
+    - plot both normalizations!
+    - timeflip as needed
 
-[[ ]] connect UI to synaptic weights
-  !? would be nice to overlay control directly on the xcorr!
-  ( ) delays
-    - implementation of delay doesnt seem to work with non-uniform scaling?
-    (x) prove to myself delay impacts the shape of xcorr,
-      at least in non-reciprocal circuits
-  ( ) noise levels
-    ( ) noise timescales? Perlin as special case?
 
 [~] generate strucutral network model 
   [~] topological sorted weight matrix

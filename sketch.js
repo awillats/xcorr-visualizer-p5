@@ -9,27 +9,37 @@ let n_nodes = 3;
 
 let running = true;
 
-function preload() {
+//Analysis Params
+let xc_len ;
+
+
+// GUI Params
+let DY = 50;
+let MID_PLOT;
+
+let corr_left;
+let corr_h;
+
+let dh ;
+let corr_t_scale ;
+let corr_y_scale ; // currently needs toning down if Perlin
+let dw ;
+
+let net_h ;  
+let net_left;
+  
+let net_plot_len;
+
+
+
+
+function preload()
+{
 }
 
-function setup() {
+function setup()
+{
   createCanvas(900, 500);
-
-  test_circuit = new Network(3);
-
-  //interesting reciprocal circuit:
-  //test_circuit.weights.mat = nj.array( [[0,1,0],[1,0,-3],[0,0,0]]); //can this circuit handle reciprocal connections?
-  test_circuit.weights.scale( -0.75);
-  test_circuit.delays.scale(4.0);
-  //test_circuit.delays.mat.set(1,2, 5);
-
-/*
-  test_circuit.nodes.forEach( n=> {
-    n.noise_gen = new PerlinGenerator(dx=0.1,noise_scale=8.0)
-    });
-  */  
-  test_circuit.reset_nodes(rand_noise=true);
-
   // talk to css, set background color
   push();
   colorMode( HSB, 360, 100, 100 );
@@ -37,6 +47,8 @@ function setup() {
   pop();
   bgColor = get_style_prop('--page-color')
   set_style_prop('--page-color',lightenColor(bgColor, .9))
+
+  MID_PLOT = height/2 - (n_nodes*DY)/2;
   // set up GUI elements
   /*
   p = new Slider2D(width/3, height/2)
@@ -45,13 +57,14 @@ function setup() {
   */
 
   sim_speed = 4;
-  net_t_scale = 1;
-  net_scale = (test_circuit.nodes[0].noise_gen instanceof PerlinGenerator ? -20 : -5); 
 
+  xc_len = 10;
+  setup_gui_params();
 }
 
 
-function draw() {
+function draw()
+{
   background( bgColor );
 
   update_all_ui();
@@ -72,29 +85,67 @@ function draw() {
   pop()
 }
 
+function setup_gui_params()
+{
+  net_t_scale = 1;
+  net_scale = (test_circuit.nodes[0].noise_gen instanceof PerlinGenerator ? -20 : -5); 
+  
+  corr_t_scale = (100/xc_len)*net_t_scale;
+  corr_y_scale = (.4)*5*net_scale; // currently needs toning down if Perlin
 
 
+  corr_left = width/2;
+  corr_h = height/2 - 75;
+  
+  dh = DY; //50;
+  
+  dw = xc_len*1.2 * corr_t_scale / net_t_scale;
+  
+  net_h = MID_PLOT;  
+  net_left = DY;
+  
+  net_plot_len = 7*DY;
+}
+
+function setup_circuit()
+{
+  test_circuit = new Network(3);
+
+  test_circuit.weights.scale( 1);
+  test_circuit.delays.scale(2.0);
+  test_circuit.reset_nodes( rand_noise = true );
+
+  // debug circuits:
+
+  //interesting reciprocal circuit:
+  //test_circuit.weights.mat = nj.array( [[0,1,0],[1,0,-3],[0,0,0]]); //can this circuit handle reciprocal connections?
+  //test_circuit.weights.scale( -0.75);
+/*
+  test_circuit.nodes.forEach( n=> {
+    n.noise_gen = new PerlinGenerator(dx=0.1, noise_scale=2.0)
+    });
+  */  
+}
+
+
+
+
+
+
+
+
+
+
+
+// Plot / draw functions
 function plot_network_outputs()
 {
-  let net_h = height/2 - 75;
-  let net_left = 50;
-  
-  let net_plot_len = 350
-  let dh = 50;
-
+ 
   test_circuit.plot_node(0, net_plot_len , net_left, net_h , net_t_scale, net_scale ) 
   test_circuit.plot_node(1, net_plot_len , net_left, net_h+dh , net_t_scale, net_scale ) 
   test_circuit.plot_node(2, net_plot_len , net_left, net_h+2*dh , net_t_scale, net_scale ) 
 }
 function plot_network_correlations(){
-  let corr_left = width/2;
-  let corr_h = height/2 - 75;
-  
-  let xc_len = 50;
-  let dh = 50;
-  let corr_t_scale = 2*net_t_scale;
-  let corr_y_scale = 5*net_scale;
-  let dw = xc_len*1.2 * corr_t_scale / net_t_scale;
 
   stroke(dark_purple);
   strokeWeight(2);

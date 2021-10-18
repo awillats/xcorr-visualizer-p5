@@ -71,13 +71,16 @@ class NetNode{
 }
 
 class Network{
-  constructor( n_nodes = 3, w=1.0)
+  constructor( n_nodes = 3, w = 1.0, d = 2)
   {
     this.n_nodes = n_nodes;
     this.nodes = Array(n_nodes).fill().map( _=> new NetNode() ) ;
+
     this.weights = new CircuitMat( n_nodes , gen_chain);
     this.weights.scale(w);
+
     this.delays = new CircuitMat( n_nodes , (n)=>nj.ones([n,n]));
+    this.delays.scale(d);
     this.reset_nodes();
   }
   get_state()
