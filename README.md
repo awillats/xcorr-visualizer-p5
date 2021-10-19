@@ -17,7 +17,13 @@ Early Findings
 - finer auto-correlations mean easier connectivity inference
 - how you normalize matters more when signals are more different from each other (i.e. normalizing in reciprocal circuits)
 - buffer lenghts longer than ~2k(5k) significantly slow-down script
-   - likely xcorr not rendering
+   - likely *computing* xcorr not rendering it
+- noise variance only matters indirectly
+  - likely 
+
+Simple:
+- delay has predictable signature on xcorr 
+  - (if autocorr is minimal, influence is delta function)
 
 -----
 

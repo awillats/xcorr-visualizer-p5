@@ -1,35 +1,61 @@
 [[ ]] connect UI to synaptic weights
   (~) noise levels
-    ( ) gaussian - simple to specify 
-    ( ) noise timescales? Perlin as special case?
+   🔊 [! !] perhaps want to be able to specify the *output* noise level?
+      - or even, variance of signal AND noise
+    (~) gaussian - simple to specify 
   ( ) weights
   ( ) delays
     - implementation of delay doesnt seem to work with non-uniform scaling?
     (x) prove to myself delay impacts the shape of xcorr,
       at least in non-reciprocal circuits
-  to see the impact of params:
+  *to see the impact of params:*
     - may want separate xcorr buffer vs param buffer?
     - clear xcorr buffer on paramter change?
       - or on key press?
+    - 📅 [? ?] show history of xcorr w.r.t buffer length to give a sense of identifiability 
+      -
+  ! ? would be nice to overlay control directly on the xcorr!
+  implementaiton notes:
+    [x] getValue is based on mouse OR unconstrained coordinates!
+      now force position constraint before getting value
 
-  !? would be nice to overlay control directly on the xcorr!
-  ? do I need to track params at the sketch level? or is the network object sufficient?
-    - try just network object for now .
-  [x] getValue is based on mouse OR unconstrained coordinates!
-    now force position constraint before getting value
+[ ] publish & polish
+  📝 [x] get gh-pages up
+    - enable setting at github, done!
+  [ ] add basic user guidance
+    ( ) start with shortcuts panel
+      - minimum viable product for this is an explainer paragraph at the bottom
+    [ ] [mr droob's showcase](https://mrdoob.com/#/112/branching) as inspiration
+      he just uses simple text prompt
 
-[~] compute cross-correlation
+~~~~~~~~~
+
+is there any way to visualize contributions?
+- color mixing model?
+- plot components?
+
+(? ?) how to measure, export results (so this can be useful quantitatively)
+
+
+~~~~~~~~~~
+
+[~] XCORR - {compute, normalize, plot}
+  ( ) highlight causal lags  
+
+  ( ) quantify instantaneous identifiability
+    - coincidence index
+
   [x] port numpy's other convolution modes to numjs
   [~] plot xcorr (as a function of lags)
     [[~]] plot all xcorr
       - excise demo code (to demo.js?) to make room for xcorr matrix 
       - increase buffer length
+
   ( ) plot fixed-lag xcorr
     ( )  add scatterplot to plotFunctions.js
   (!) normalize cross-corr by autocorr
     - plot both normalizations!
     - timeflip as needed
-
 
 [~] generate strucutral network model 
   [~] topological sorted weight matrix

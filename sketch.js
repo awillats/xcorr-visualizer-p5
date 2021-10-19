@@ -71,7 +71,7 @@ function setup()
 
   sim_speed = 4;
 
-  xc_len = 10;
+  xc_len = 18;
   setup_circuit();
   setup_plot_params();
   setup_gui_params();
@@ -155,7 +155,7 @@ function set_net_noise(node_id, noise_val)
 
 function setup_circuit()
 {
-  overall_delay = 2.0;
+  overall_delay = 3.0;
   overall_weight = 1.0;
   test_circuit = new Network(3, w = overall_weight, d = overall_delay);
 
