@@ -2,12 +2,19 @@
   /*--page-color: hsl(346, 18%, 85%);*/
   --page-color: rgb(220,180,190);
   --subtle-text-color: hsl(346, 18%, 55%);
+  --highlight-text-color: hsl(326, 85%, 25%);
+  /*rgb(120,10,80))*/
+
+
   --ui-face-color: hsl(42, 60%, 80%); /* pale yellow*/
   --ui-text-color: hsl(0, 0%, 0% );
   --ui-edge-color: hsl(260, 5%, 5%);
   --ui-light-edge-color: hsla(260, 15%,40%, 0.3);
   --ui-back-color: hsl(42, 40%, 60%);
   --plot-edge-color: rgb(0,12,80);
+
+  --control-text-size: 12px;
+
 }
 
 html, body {
@@ -24,7 +31,23 @@ canvas {
     display: block;
     padding-left: 0;
     padding-right: 0;
-    margin-left: auto;
+    /*margin-left: auto;*/
     margin-right: auto;
     display: block;
+}
+
+/* https://stackoverflow.com/questions/22997589/github-like-inline-code-styling */
+td { font-size: var(--control-text-size)}
+tr { font-size: var(--control-text-size)}
+code {
+    border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    -webkit-border-radius: 5px; 
+    border: 1px solid #000000; /* black border*/
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 3px;
+    padding-right: 3px;
+    background: #00000015; /*translucent gray */
+    font:var(--control-text-size) Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace
 }

@@ -11,6 +11,7 @@ let running = true;
 
 let md;
 let explainer_pg;
+let explainer_txt;
 
 //network params;
 let overall_delay ;
@@ -51,6 +52,9 @@ let net_plot_len;
 
 function preload()
 {
+  explainer_txt = loadStrings('EXPLAIN.md')
+  //requires local server mode:
+  // https://github.com/processing/p5.js/wiki/Local-server
 }
 function hsb_mode(){   colorMode( HSB, 360, 100, 100 ); }
 function rgb_mode(){   colorMode( RGB, 255); }
@@ -79,31 +83,49 @@ function setup()
   setup_circuit();
   setup_plot_params();
   setup_gui_params();
+  setup_explainer_pg();
+
+}
+function wrap_html_color(html, colorstr)
+{
+  return `<span style="color:${colorstr};">${html}</span>`
+}
+
+function setup_explainer_pg()
+{
+  let subtle_color = get_style_prop('--subtle-text-color')
+  let high_color = get_style_prop('--highlight-text-color')
 
 
-  explainer_pg = createP('initial text');
+  explainer_pg = createP('');
   explainer_pg.style('font-size', '12px');
-  //explainer_pg.position(50, height-350); 
-
-  md = window.markdownit();
-  var result = md.render(loadStrings('EXPLAIN.md'));
+  explainer_pg.position(50, 20); 
+  //markdown-it options: https://markdown-it.github.io/markdown-it/#MarkdownIt.new
+  md = window.markdownit().set({html:true, breaks: true});
+  explainer_txt
+  var result = md.render(explainer_txt.join('\n'));
+  result = wrap_html_color(result, high_color);
+    //'rgb(120,10,80)')
+    console.log( high_color );
   explainer_pg.elt.innerHTML = result;
 }
 
-function draw_explainer_text()
+function draw_additional_text()
 {
+  /*
   push();
   textAlign(CENTER, CENTER);
   textStyle(BOLD);
   fill( get_style_prop('--subtle-text-color') )
   text('hallo', width/2, height/8);
   pop();
+*/
 }
 
 function draw()
 {
   background( bgColor );
-  draw_explainer_text(); 
+  draw_additional_text(); 
   update_all_ui();
   show_all_ui();
   
