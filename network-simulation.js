@@ -118,7 +118,11 @@ class Network{
   }
   reset_nodes( rand_noise = true )
   {
-    this.nodes.forEach( n => n.reset(rand_noise=true) );
+    this.nodes.forEach( 
+      n => {
+        n.reset(rand_noise=true);
+        n.reset_history();
+      } );
   }
   node_output(idx)
   {

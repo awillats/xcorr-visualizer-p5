@@ -1,5 +1,5 @@
 [[ ]] connect UI to synaptic weights
-  (! ) noise levels
+  (~) noise levels
     ( ) gaussian - simple to specify 
     ( ) noise timescales? Perlin as special case?
   ( ) weights
@@ -7,7 +7,16 @@
     - implementation of delay doesnt seem to work with non-uniform scaling?
     (x) prove to myself delay impacts the shape of xcorr,
       at least in non-reciprocal circuits
+  to see the impact of params:
+    - may want separate xcorr buffer vs param buffer?
+    - clear xcorr buffer on paramter change?
+      - or on key press?
+
   !? would be nice to overlay control directly on the xcorr!
+  ? do I need to track params at the sketch level? or is the network object sufficient?
+    - try just network object for now .
+  [x] getValue is based on mouse OR unconstrained coordinates!
+    now force position constraint before getting value
 
 [~] compute cross-correlation
   [x] port numpy's other convolution modes to numjs

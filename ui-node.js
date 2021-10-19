@@ -1,6 +1,5 @@
-let all_ui_points = []
-
-
+let all_ui_points = [] // all UINodes automatically add themself to this list
+//Draggable implementation: https://github.com/awillats/dynamics-visualizer-p5/blob/main/dragPoints.js
 
 
 function add_ui_node(node){
@@ -191,6 +190,7 @@ class UINode extends Draggable {
     this.hh = this.hw;
     this.color = color(node_color);
     add_ui_node( this );
+    this.ondrag_callbacks = [];
   }
 //  drawCircle() { 
 //    ellipseMode(RADIUS)
@@ -214,28 +214,65 @@ class UINode extends Draggable {
     let val = this.getValue()
     this.draw_text( `${fnum(val.x)}, ${fnum(val.y)}` )
   }
+  update()
+  {
+    super.update()
+    if (this.dragging)
+    {
+      // some alternate implementations here:
+      // modeled after Alter the register function to take the object: http://www.bitstructures.com/2007/11/javascript-method-callbacks.html
+      // https://stackoverflow.com/questions/20279484/how-to-access-the-correct-this-inside-a-callback
+      this.ondrag_callbacks.forEach( f => f() );
+    }
+  }
+
 }
 class Slider1D extends UINode {
-  constructor(x, y, is_vertical = true , node_color = get_ui_colors().face) {
+  constructor(x, y,
+      wh = 50,
+      is_vertical = true,
+      node_color = get_ui_colors().face
+      ) {
     super (x,y, node_color)
-    this.value_constraints = new LinearConstraint(0, 1);
-    let v = (is_vertical ? y : x)
-    this.position_constraints = new LinearConstraint(v-50, v+50);
     this.is_vertical = is_vertical
+    let v = this.pos(x,y);// (is_vertical ? y : x)
+
+    let pos_con = new LinearConstraint( v-wh, v+wh );
+    this.set_constraints(new LinearConstraint(0, 1), pos_con);
+  }
+  set_constraints( val_con, pos_con){
+    this.value_constraints = val_con;
+    if (pos_con) {
+      this.position_constraints = pos_con;
+    }
     
-    let con_min = this.position_constraints.max;
-    let xo = (this.is_vertical ? x : this.position_constraints.min );
-    let yo = (this.is_vertical ? this.position_constraints.max : y );
+    
+    //let con_min = this.position_constraints.max;
+    let xo = (this.is_vertical ? this.x : this.position_constraints.min );
+    let yo = (this.is_vertical ? this.position_constraints.max : this.y );
     this.origin = new p5.Vector(xo, yo)
 
     this.xScale = this.value_constraints.range()/this.position_constraints.range()
     this.yScale = -this.value_constraints.range()/this.position_constraints.range()
   }
-  pos(){
-    return (this.is_vertical ? this.y : this.x)
+  pos(x=null, y=null){
+    if (x instanceof p5.Vector) {
+      let xy = x.copy();
+      x = xy.x;
+      y = xy.y;
+    }
+    else{
+      x = (x==null ? this.x : x);
+      y = (y==null ? this.y : y);
+    }
+    return (this.is_vertical ? y : x)
   }
   update(){
     super.update()
+    this.constrain_pos();
+  }
+  constrain_pos()
+  {
     if ( this.is_vertical ){
       this.x = this.origin.x;
       this.y = this.position_constraints.constrain(this.y);
@@ -244,6 +281,10 @@ class Slider1D extends UINode {
       this.x = this.position_constraints.constrain(this.x);
       this.y = this.origin.y;
     }
+  }
+  getValue(){
+    this.constrain_pos();
+    return super.getValue();
   }
   show(){
     push()

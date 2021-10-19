@@ -9,6 +9,20 @@ let n_nodes = 3;
 
 let running = true;
 
+
+//network params;
+let overall_delay ;
+let overall_weight ;
+/*
+let net_weights = [];
+let net_noises = [];
+*/
+
+let noise_sliders ;
+let weight_sliders ;
+let delay_sliders ;
+
+
 //Analysis Params
 let xc_len ;
 
@@ -48,7 +62,6 @@ function setup()
   bgColor = get_style_prop('--page-color')
   set_style_prop('--page-color',lightenColor(bgColor, .9))
 
-  MID_PLOT = height/2 - (n_nodes*DY)/2;
   // set up GUI elements
   /*
   p = new Slider2D(width/3, height/2)
@@ -59,6 +72,8 @@ function setup()
   sim_speed = 4;
 
   xc_len = 10;
+  setup_circuit();
+  setup_plot_params();
   setup_gui_params();
 }
 
@@ -77,6 +92,7 @@ function draw()
     });
     //test_circuit.sim();
   }
+
   push()
   stroke( dark_purple );
   plot_network_outputs();
@@ -85,17 +101,20 @@ function draw()
   pop()
 }
 
-function setup_gui_params()
+
+function setup_plot_params()
 {
+  //layout signal params 
   net_t_scale = 1;
-  net_scale = (test_circuit.nodes[0].noise_gen instanceof PerlinGenerator ? -20 : -5); 
+  net_scale = (test_circuit.nodes[0].noise_gen instanceof PerlinGenerator ? -20 : -2); 
   
   corr_t_scale = (100/xc_len)*net_t_scale;
-  corr_y_scale = (.4)*5*net_scale; // currently needs toning down if Perlin
+  corr_y_scale = (3)*5*net_scale; // currently needs toning down if Perlin
 
+  MID_PLOT = height/2 - (n_nodes*DY)/2;
 
   corr_left = width/2;
-  corr_h = height/2 - 75;
+  corr_h = MID_PLOT;
   
   dh = DY; //50;
   
@@ -107,13 +126,42 @@ function setup_gui_params()
   net_plot_len = 7*DY;
 }
 
+function setup_gui_params()
+{
+  noise_sliders = [];
+  let slider_x = corr_left-DY/2;
+  let slider_len = 15;
+  function gen_slider(i, y)
+  {
+    let slider =  new Slider1D(slider_x , y ,  wh = slider_len) ;
+    slider.hw = 5;
+    slider.set_constraints( new LinearConstraint(0,5) )
+    //slider.ondrag_callbacks.push( () => console.log( slider.getValue()) );
+    slider.ondrag_callbacks.push( () => set_net_noise(i, slider.getValue().y ) );
+    
+    noise_sliders.push( slider )
+  }
+  for (let i = 0; i< n_nodes; i++)
+  {
+    gen_slider( i, MID_PLOT + i*DY)
+  }
+}
+
+function set_net_noise(node_id, noise_val)
+{
+  //this should get moved into Network class implementation
+  test_circuit.nodes[node_id].noise_gen.sigma =  noise_val;
+}
+
 function setup_circuit()
 {
-  test_circuit = new Network(3);
+  overall_delay = 2.0;
+  overall_weight = 1.0;
+  test_circuit = new Network(3, w = overall_weight, d = overall_delay);
 
-  test_circuit.weights.scale( 1);
-  test_circuit.delays.scale(2.0);
-  test_circuit.reset_nodes( rand_noise = true );
+  //test_circuit.weights.scale( 1 );
+  //test_circuit.delays.scale( 2.0 );
+  //test_circuit.reset_nodes( rand_noise = true );
 
   // debug circuits:
 
@@ -126,15 +174,6 @@ function setup_circuit()
     });
   */  
 }
-
-
-
-
-
-
-
-
-
 
 
 // Plot / draw functions
@@ -154,18 +193,16 @@ function plot_network_correlations(){
   function plot_xcorr(i,j, dx=0, dy=0, k=i)
   {
     let xc;
-    if (k == -1 )
-    {
-      xc = get_xcorr(i,j);
-    }
-    else
-    {
-       xc = get_autocrosscorr(i, j, k);
-    }
-
+    //compute the cross-correlation
+    if (k == -1 ) { xc = get_xcorr(i,j); }
+    else { xc = get_autocrosscorr(i, j, k); }
+    //process it 
     xc = get_middle(xc, xc_len);
     xc = maxnorm(xc).tolist();
+    
+    //plot the cross-correlation
     plot1DArray(xc, corr_left + dx, corr_h + dy, corr_t_scale, corr_y_scale); 
+
     push();
     strokeWeight(1);
     stroke(255);
@@ -201,9 +238,19 @@ function plot_network_correlations(){
 
 
 function keyPressed(){
-  if (key === ' ')
+  switch(key)
   {
-    running = !running;
+    case ' ':
+      running = !running;
+      break;
+
+    case 'c':
+      test_circuit.reset_nodes();
+
+    default:
+      console.log( key );
+      break;
+
   }
 }
 function mousePressed(){
