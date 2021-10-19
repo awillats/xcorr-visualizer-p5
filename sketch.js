@@ -68,8 +68,14 @@ function setup()
   pop();
   hsb_mode();
   bgColor = get_style_prop('--page-color')
-  //set_style_prop('--page-color',lightenColor(bgColor, .9))
+
+  //neither necessary nor sufficient. colorMode seems to dominate
+  function color_to_rgbstr(c)
+  {
+    return `rgb(${red(c)}, ${green(c)} , ${blue(c)})`;
+  }
   rgb_mode();
+  set_style_prop( '--page-color', color_to_rgbstr(lightenColor(bgColor, .9)) )
   // set up GUI elements
   /*
   p = new Slider2D(width/3, height/2)
@@ -248,8 +254,9 @@ function plot_network_correlations(){
     plot1DArray(xc, corr_left + dx, corr_h + dy, corr_t_scale, corr_y_scale); 
 
     push();
-    strokeWeight(1);
-    stroke(255);
+    strokeWeight(2);
+    //stroke(255);
+    stroke( get_style_prop('--ui-face-color') );
     let midx = corr_left + dx + (xc_len* corr_t_scale/net_t_scale)/2
     line( midx, corr_h+dy, midx, corr_h+dy-dh*.7);
     pop();
