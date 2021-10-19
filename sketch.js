@@ -9,6 +9,8 @@ let n_nodes = 3;
 
 let running = true;
 
+let md;
+let explainer_pg;
 
 //network params;
 let overall_delay ;
@@ -50,18 +52,20 @@ let net_plot_len;
 function preload()
 {
 }
-
+function hsb_mode(){   colorMode( HSB, 360, 100, 100 ); }
+function rgb_mode(){   colorMode( RGB, 255); }
 function setup()
 {
   createCanvas(900, 500);
   // talk to css, set background color
   push();
-  colorMode( HSB, 360, 100, 100 );
+  hsb_mode();
   dark_purple= color( 270, 80, 40 );
   pop();
+  hsb_mode();
   bgColor = get_style_prop('--page-color')
-  set_style_prop('--page-color',lightenColor(bgColor, .9))
-
+  //set_style_prop('--page-color',lightenColor(bgColor, .9))
+  rgb_mode();
   // set up GUI elements
   /*
   p = new Slider2D(width/3, height/2)
@@ -75,13 +79,31 @@ function setup()
   setup_circuit();
   setup_plot_params();
   setup_gui_params();
+
+
+  explainer_pg = createP('initial text');
+  explainer_pg.style('font-size', '12px');
+  //explainer_pg.position(50, height-350); 
+
+  md = window.markdownit();
+  var result = md.render(loadStrings('EXPLAIN.md'));
+  explainer_pg.elt.innerHTML = result;
 }
 
+function draw_explainer_text()
+{
+  push();
+  textAlign(CENTER, CENTER);
+  textStyle(BOLD);
+  fill( get_style_prop('--subtle-text-color') )
+  text('hallo', width/2, height/8);
+  pop();
+}
 
 function draw()
 {
   background( bgColor );
-
+  draw_explainer_text(); 
   update_all_ui();
   show_all_ui();
   
@@ -134,7 +156,7 @@ function setup_gui_params()
   function gen_slider(i, y)
   {
     let slider =  new Slider1D(slider_x , y ,  wh = slider_len) ;
-    slider.hw = 5;
+    slider.hw = 10;
     slider.set_constraints( new LinearConstraint(0,5) )
     //slider.ondrag_callbacks.push( () => console.log( slider.getValue()) );
     slider.ondrag_callbacks.push( () => set_net_noise(i, slider.getValue().y ) );

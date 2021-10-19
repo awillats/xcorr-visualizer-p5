@@ -1,5 +1,7 @@
 :root {
+  /*--page-color: hsl(346, 18%, 85%);*/
   --page-color: rgb(220,180,190);
+  --subtle-text-color: hsl(346, 18%, 55%);
   --ui-face-color: hsl(42, 60%, 80%); /* pale yellow*/
   --ui-text-color: hsl(0, 0%, 0% );
   --ui-edge-color: hsl(260, 5%, 5%);
@@ -11,7 +13,9 @@
 html, body {
   margin: 0;
   padding: 0;
-  background-color: var(--page-color);
+  /* background-color: var(--page-color); */
+  background-color: var(--subtle-text-color);
+  font-family: 'Kreon', serif;
 
 }
 
