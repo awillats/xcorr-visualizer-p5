@@ -6,7 +6,7 @@
 |  |  |
 | ------:| :----------|
 | `space`: | pause / play |
-| `c`:  | clears the signal buffer |
+| `c`:     | clear the signal buffer |
 
 </details>
 
