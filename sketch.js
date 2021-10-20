@@ -131,13 +131,19 @@ function draw_additional_text()
   textSize( parseFloat( get_style_prop('--label-text-size') ) )
   fill( get_style_prop('--subtle-text-color') )
   
-  text(`current noise model:\n${test_circuit.get_noise_type_str()}`, width/4, height*.7);
+  text(`current circuit: A-> B-> C chain\n \n current noise model:\n${test_circuit.get_noise_type_str()}`, width/4, height*.7);
  
 
   text('syn. weight', macro_slider_x, macro_slider_y-DY/2)
   text('syn. delay', macro_slider_x+2*macro_slider_dw ,macro_slider_y-DY/2)
 
   text('input noise', corr_left-DY/2, 150)
+
+  textStyle(ITALIC);
+  textSize(2*parseFloat( get_style_prop('--label-text-size') ) )
+  text('A', net_left-DY/2, net_h)
+  text('B', net_left-DY/2, net_h + dh)
+  text('C', net_left-DY/2, net_h + 2*dh)
   //console.log( corr_left-DY/2)
   pop();
 }
