@@ -1,6 +1,6 @@
 
 🚧  Work in progress 🚧 
-
+![preview of interface](assets/example_screenshot.png)
 intended to view how correlations between outputs of small networks vary as a function of simple paramters 
 
 notably, this project should import some rendering and generation capability from `circuit-visualizer-p5`
