@@ -202,17 +202,23 @@ class UINode extends Draggable {
   }
   draw_text(str){
     push()
-    rectMode(CENTER)
-    textAlign(CENTER)
-    fill(0)
-    textSize(20);
+    //rectMode(CENTER)
+    textAlign(CENTER, CENTER)
+    
+    fill( get_style_prop('--ui-text-color'))
+    let size_str = get_style_prop('--ui-text-size')
+
+    textSize( parseFloat(size_str) );
     text(str, this.x, this.y)
     pop()
+    noStroke();
   }
   show() {
+    push()
     super.show()
     let val = this.getValue()
     this.draw_text( `${fnum(val.x)}, ${fnum(val.y)}` )
+    pop();
   }
   update( force_param_update = false)
   {
@@ -255,6 +261,14 @@ class Slider1D extends UINode {
     this.xScale = this.value_constraints.range()/this.position_constraints.range()
     this.yScale = -this.value_constraints.range()/this.position_constraints.range()
   }
+  set_origin(x=null, y=null)
+  {
+    if (x==null) { x = this.x; }
+    if (y==null) { y = this.y; }
+    let xo = (this.is_vertical ? this.x : x);
+    let yo = (this.is_vertical ? y : this.y );
+    this.origin = new p5.Vector(xo, yo)
+  }
   pos(x=null, y=null){
     if (x instanceof p5.Vector) {
       let xy = x.copy();
@@ -285,6 +299,21 @@ class Slider1D extends UINode {
   getValue(){
     this.constrain_pos();
     return super.getValue();
+  }
+  set_value( v )
+  {
+    //certainly has to be a more concise way to write this
+    // should be a general method for mapping between two ranges (if doesnt already exist)
+  if (this.is_vertical)
+    {
+      this.y = this.value_constraints.mapval(v, this.position_constraints.min, this.position_constraints.max);
+    }
+    else
+    {
+      this.x = this.value_constraints.mapval(v, this.position_constraints.min, this.position_constraints.max);
+    }
+    console.log(this.x)
+    console.log(this.y)
   }
   show(){
     push()

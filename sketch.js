@@ -29,6 +29,7 @@ let delay_sliders ;
 //Analysis Params
 let xc_len ;
 
+let DEFAULT_W, DEFAULT_D;
 
 // GUI Params
 let DY = 50;
@@ -48,7 +49,11 @@ let net_left;
 let net_plot_len;
 
 
-
+let macro_slider_x 
+let macro_slider_y 
+let macro_slider_w 
+let macro_slider_wpad 
+let macro_slider_dw 
 
 function preload()
 {
@@ -61,6 +66,7 @@ function rgb_mode(){   colorMode( RGB, 255 ); }
 function setup()
 {
   createCanvas( 900, 500 );
+
   // talk to css, set background color
   push();
   hsb_mode();
@@ -84,8 +90,9 @@ function setup()
   */
 
   sim_speed = 4;
-
-  xc_len = 18;
+  DEFAULT_W = 1.0;
+  DEFAULT_D = 3;
+  xc_len = 24;
   setup_circuit();
   setup_plot_params();
   setup_gui_params();
@@ -121,9 +128,17 @@ function draw_additional_text()
   push();
   textAlign(CENTER, CENTER);
   textStyle(BOLD);
+  textSize( parseFloat( get_style_prop('--label-text-size') ) )
   fill( get_style_prop('--subtle-text-color') )
   
-  text(`Current noise model:\n${test_circuit.get_noise_type_str()}`, width/4, height*.7);
+  text(`current noise model:\n${test_circuit.get_noise_type_str()}`, width/4, height*.7);
+ 
+
+  text('syn. weight', macro_slider_x, macro_slider_y-DY/2)
+  text('syn. delay', macro_slider_x+2*macro_slider_dw ,macro_slider_y-DY/2)
+
+  text('input noise', corr_left-DY/2, 150)
+  //console.log( corr_left-DY/2)
   pop();
 }
 
@@ -195,6 +210,12 @@ function setup_plot_params()
   net_left = DY;
   
   net_plot_len = 7*DY;
+  
+  macro_slider_x = width/2;
+  macro_slider_y = 1.5*DY;
+  macro_slider_w = DY;
+  macro_slider_wpad = DY;
+  macro_slider_dw = macro_slider_w + macro_slider_wpad;
 }
 
 function setup_gui_params()
@@ -204,7 +225,7 @@ function setup_gui_params()
   let slider_len = 15; //height, in pixels
   let noise_max = 5.0;
 
-  function gen_slider(i, y)
+  function gen_noise_slider(i, y)
   {
     let slider =  new Slider1D(slider_x , y ,  wh = slider_len) ;
     slider.hw = 10;
@@ -215,9 +236,32 @@ function setup_gui_params()
 
   for (let i = 0; i< n_nodes; i++)
   {
-    gen_slider( i, MID_PLOT + i*DY)
+    gen_noise_slider( i, MID_PLOT + i*DY)
   }
+
+  //set up overall weight, delay sliders 
+
+
+  let reweight_f = (w) => test_circuit.set_nonzero_weights(w)
+  let redelay_f = (d) => test_circuit.set_nonzero_delays(d)
+
+  let w_slider = new Slider1D( macro_slider_x,                 macro_slider_y, macro_slider_w, false)
+  w_slider.set_constraints( new LinearConstraint(-3.5, 3.5) )
+  w_slider.set_value( DEFAULT_W );
+  w_slider.set_origin( w_slider.position_constraints.center() )
+  w_slider.ondrag_callbacks.push( () => {
+    reweight_f( w_slider.pos( w_slider.getValue() ) );
+  });
+
+  let d_slider = new Slider1D( macro_slider_x+2*macro_slider_dw, macro_slider_y, macro_slider_w, false)
+  d_slider.set_constraints( new LinearConstraint(0, 8) )
+  d_slider.set_value( DEFAULT_D )
+  d_slider.ondrag_callbacks.push( () => redelay_f( d_slider.pos( d_slider.getValue()) ) );
+
+
 }
+
+
 
 function set_node_noise_var(node_id, noise_val)
 {
@@ -233,16 +277,9 @@ function transform_all_noise_gen( new_noise_gen )
   //trigger parameter updates for all noise_gen to set to new vals
 }
 
-function setup_circuit()
+function setup_circuit(overall_weight = 1.0, overall_delay = 3)
 {
-  overall_delay = 3.0;
-  overall_weight = 1.0;
   test_circuit = new Network(3, w = overall_weight, d = overall_delay);
-
-  //test_circuit.weights.scale( 1 );
-  //test_circuit.delays.scale( 2.0 );
-  //test_circuit.reset_nodes( rand_noise = true );
-
   // debug circuits:
 
   //interesting reciprocal circuit:

@@ -8,11 +8,14 @@ class CircuitMat{
     this.n_nodes = n_nodes;
     //this.mat = this.binaryToMat('010'+'001'+'000')
     if (mat_gen_fun){
-      this.mat = mat_gen_fun(n_nodes);
+      this.mat_gen_fun = mat_gen_fun;
+      //this.mat = mat_gen_fun(n_nodes);
     }
     else{
-      this.mat = gen_chain( n_nodes ); 
+      this.mat_gen_fun = gen_chain;
+      //this.mat = gen_chain( n_nodes ); 
     }
+    this.mat = this.mat_gen_fun(n_nodes);
     //this.print();
   }
   print()
@@ -23,6 +26,14 @@ class CircuitMat{
   {
     this.mat = this.mat.multiply(s);
     return this.mat;
+  }
+  set_nonzero_to( v, minscale = 1e-5)
+  {
+    this.mat = this.mat.divide(this.mat)
+    //if we allow this function to scale mat by 0, it cant be rescaled back...
+    //so for now, we'll turn 0s into small numbers
+    if (v != 0) { this.scale(v) }
+    else { this.scale( minscale) }
   }
 }
 
@@ -70,6 +81,8 @@ class NetNode{
   reset_history() {  this.x_history.signal.fill(0.0) }
 }
 
+///
+
 class Network{
   constructor( n_nodes = 3, w = 1.0, d = 2)
   {
@@ -98,9 +111,10 @@ class Network{
       //print_mat(weight_row)
       this.nodes.forEach( (n_target,j) => {
         let w = weight_row.get(0, j);
+        //console.log(w);
         let d = delay_row.get(0, j);
         //print(w)
-        if (w != 0){
+        if ((! isNaN(w) ) && (w != 0)) {
           let x_past = n_src.x_history.get_delayed(d)
           //print(`from ${i} to ${j}`);
           //print(x_past);
@@ -134,6 +148,16 @@ class Network{
     this.nodes.forEach( n => n.noise_gen = new_noise_gen_fun() );
   }
   get_noise_type_str() { return this.nodes[0].noise_gen.type_str }
+
+  set_nonzero_weights( w )
+  {
+    this.weights.set_nonzero_to( w );
+  }
+  set_nonzero_delays( d )
+  {
+    this.delays.set_nonzero_to( d );
+  }
+
   node_output(idx)
   {
     return [...this.nodes[idx].x_history.signal];

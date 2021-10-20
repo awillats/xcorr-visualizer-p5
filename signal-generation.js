@@ -102,7 +102,7 @@ class GaussianGenerator extends SignalGenerator {
 }
 
 class PerlinGenerator extends SignalGenerator {
-  constructor(y_scale = 1.0, dx = 0.01, t_scale = 20.0, x0 = false){
+  constructor(y_scale = 1.0, dx = 0.01, t_scale = 50.0, x0 = false){
     super();
     this.dx = dx;
     this.t_scale = t_scale;
@@ -209,7 +209,6 @@ function noise_gen_type_by_idx( idx = -1)
   ];
 
   let this_ngf = (idx<0 ? random(noise_gen_funs) : noise_gen_funs[idx] ) ;
-  console.log( this_ngf );
   return this_ngf;
 }
 

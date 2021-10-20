@@ -5,12 +5,14 @@
   --highlight-text-color: hsl(326, 85%, 25%);
   /*rgb(120,10,80))*/
 
+  --label-text-size: 12px;
 
   --ui-face-color: hsl(42, 60%, 80%); /* pale yellow*/
-  --ui-text-color: hsl(0, 0%, 0% );
-  --ui-edge-color: hsl(260, 5%, 5%);
+  --ui-text-color: hsl(326, 80%, 25% ); /* highlight text color */
+  --ui-edge-color: hsl(346, 18%, 55%);/*hsl(260, 5%, 5%);*/
   --ui-light-edge-color: hsla(260, 15%,40%, 0.3);
   --ui-back-color: hsl(42, 40%, 60%);
+  --ui-text-size: 20px;
   --plot-edge-color: rgb(0,12,80);
 
   --control-text-size: 12px;
