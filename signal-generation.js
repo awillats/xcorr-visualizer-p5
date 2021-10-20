@@ -73,6 +73,9 @@ class SignalGenerator{
   constructor()
   {
   }
+  gen_sample(nt) {}
+  gen() {}
+  set_variance(v) {}
 }
 
 class GaussianGenerator extends SignalGenerator {
@@ -81,6 +84,7 @@ class GaussianGenerator extends SignalGenerator {
     super();
     this.mu = mu;
     this.sigma = sigma;
+    this.type_str = 'Gaussian'
   }
   gen_sample()
   {
@@ -90,18 +94,28 @@ class GaussianGenerator extends SignalGenerator {
   {
     return Array(nt).fill().map( this.gen_sample , this)
   }
+  set_variance( stdv )
+  {
+    this.sigma = stdv;
+  }
+
 }
 
 class PerlinGenerator extends SignalGenerator {
-  constructor(dx = 0.01, noise_scale=1.0, x0=false){
+  constructor(y_scale = 1.0, dx = 0.01, t_scale = 20.0, x0 = false){
     super();
     this.dx = dx;
-    this.noise_scale = noise_scale;
+    this.t_scale = t_scale;
+    this.y_scale = y_scale;
+    this.y_bias = 0.0;
     
     this.i = 0;
     this.x0 = ( x0 ? x0 : this.rand_start() );
-
-
+    this.type_str = 'Perlin'
+  }
+  set_variance( y_scale )
+  {
+    this.y_scale = y_scale;
   }
   rand_start()
   {
@@ -114,7 +128,9 @@ class PerlinGenerator extends SignalGenerator {
     i = (i ? i : this.i)
     i = this.i;
     this.i++
-    return noise( (this.x0 + i*this.dx) * this.noise_scale )
+    let n = noise( (this.x0 + i*this.dx) * this.t_scale )
+    let scaled_noise = (n + this.y_bias)*this.y_scale;
+    return scaled_noise
   }
   gen(nt, do_rand_start = false)
   {
@@ -127,6 +143,15 @@ class PoissonGenerator extends SignalGenerator {
   constructor( lambda = 0.1 ) {
     super();
     this.lambda = lambda;
+    this.type_str = 'Poisson'
+  }
+  set_variance( lam )
+  {
+    this.lambda = constrain(lam, 0, 9999);
+    if (lam != this.lambda)
+    {
+      console.log( 'clipped lambda in construction of Poisson Generator' )
+    }
   }
   gen_sample()
   {
@@ -150,11 +175,12 @@ class PoissonGenerator extends SignalGenerator {
 }
 
 class MultiPoissonGenerator extends PoissonGenerator {
-  constructor( lambda = 0.1, n = 1, do_avg = false)
+  constructor( lambda = 0.1, n = 20, do_avg = true)
   {
     super(lambda);
     this.n = n;
     this.do_avg = do_avg;
+    this.type_str = `${n} Avergaed Poisson`
   }
   gen_sample( do_avg = null)
   {
@@ -171,9 +197,21 @@ class MultiPoissonGenerator extends PoissonGenerator {
 
 }
 
+function noise_gen_type_by_idx( idx = -1)
+{
+  //to avoid having to clone objects
+  //this only returns the function for generating the noise gen object
+  let noise_gen_funs = [
+    () => new GaussianGenerator(),
+    () => new PoissonGenerator(),
+    () => new MultiPoissonGenerator(),
+    () => new PerlinGenerator(),
+  ];
 
-
-
+  let this_ngf = (idx<0 ? random(noise_gen_funs) : noise_gen_funs[idx] ) ;
+  console.log( this_ngf );
+  return this_ngf;
+}
 
 
 

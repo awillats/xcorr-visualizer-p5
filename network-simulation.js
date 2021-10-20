@@ -124,6 +124,16 @@ class Network{
         n.reset_history();
       } );
   }
+
+  set_node_noise_variance(idx, noise_val)
+  {
+    this.nodes[ idx ].noise_gen.set_variance( noise_val )
+  }
+  transform_all_noise_gen( new_noise_gen_fun )
+  {
+    this.nodes.forEach( n => n.noise_gen = new_noise_gen_fun() );
+  }
+  get_noise_type_str() { return this.nodes[0].noise_gen.type_str }
   node_output(idx)
   {
     return [...this.nodes[idx].x_history.signal];

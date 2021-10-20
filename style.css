@@ -51,3 +51,10 @@ code {
     background: #00000015; /*translucent gray */
     font:var(--control-text-size) Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace
 }
+
+details[open] > p {
+  background: var(--page-color);
+  border-radius: 5px;
+  padding-bottom: 3px;
+}
+

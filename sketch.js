@@ -57,10 +57,10 @@ function preload()
   // https://github.com/processing/p5.js/wiki/Local-server
 }
 function hsb_mode(){   colorMode( HSB, 360, 100, 100 ); }
-function rgb_mode(){   colorMode( RGB, 255); }
+function rgb_mode(){   colorMode( RGB, 255 ); }
 function setup()
 {
-  createCanvas(900, 500);
+  createCanvas( 900, 500 );
   // talk to css, set background color
   push();
   hsb_mode();
@@ -118,14 +118,13 @@ function setup_explainer_pg()
 
 function draw_additional_text()
 {
-  /*
   push();
   textAlign(CENTER, CENTER);
   textStyle(BOLD);
   fill( get_style_prop('--subtle-text-color') )
-  text('hallo', width/2, height/8);
+  
+  text(`Current noise model:\n${test_circuit.get_noise_type_str()}`, width/4, height*.7);
   pop();
-*/
 }
 
 function draw()
@@ -151,7 +150,29 @@ function draw()
   pop()
 }
 
+function scale_y_by_noise_model()
+{
+  let test_noise = test_circuit.nodes[0].noise_gen
 
+  switch (test_noise.constructor)
+  {
+    case PoissonGenerator:
+      let lams = test_circuit.nodes.map(n => n.noise_gen.lambda );
+      let max_lam = nj.max(lams); 
+      net_scale = (max_lam <= 1 ? -10 : -2);
+      break;
+   case MultiPoissonGenerator:
+      net_scale = -2;
+      break;
+    case PerlinGenerator:
+      net_scale = -8;// test_noise.y_scale;
+      break;
+    default:
+      net_scale = -2;
+  }
+  return net_scale
+ 
+}
 function setup_plot_params()
 {
   //layout signal params 
@@ -180,27 +201,36 @@ function setup_gui_params()
 {
   noise_sliders = [];
   let slider_x = corr_left-DY/2;
-  let slider_len = 15;
+  let slider_len = 15; //height, in pixels
+  let noise_max = 5.0;
+
   function gen_slider(i, y)
   {
     let slider =  new Slider1D(slider_x , y ,  wh = slider_len) ;
     slider.hw = 10;
-    slider.set_constraints( new LinearConstraint(0,5) )
-    //slider.ondrag_callbacks.push( () => console.log( slider.getValue()) );
-    slider.ondrag_callbacks.push( () => set_net_noise(i, slider.getValue().y ) );
-    
-    noise_sliders.push( slider )
+    slider.set_constraints( new LinearConstraint( 0, noise_max ) )
+    slider.ondrag_callbacks.push( () => set_node_noise_var( i, slider.getValue().y ) );
+    noise_sliders.push( slider ) // may be unneccesary
   }
+
   for (let i = 0; i< n_nodes; i++)
   {
     gen_slider( i, MID_PLOT + i*DY)
   }
 }
 
-function set_net_noise(node_id, noise_val)
+function set_node_noise_var(node_id, noise_val)
 {
-  //this should get moved into Network class implementation
-  test_circuit.nodes[node_id].noise_gen.sigma =  noise_val;
+  test_circuit.set_node_noise_variance( node_id, noise_val )
+}
+
+function transform_all_noise_gen( new_noise_gen )
+{
+  test_circuit.transform_all_noise_gen( new_noise_gen );
+  noise_sliders.forEach( (s,idx) => set_node_noise_var( idx, s.getValue().y) );
+  //press_all_ui();
+  //update_all_ui( true );
+  //trigger parameter updates for all noise_gen to set to new vals
 }
 
 function setup_circuit()
@@ -229,7 +259,7 @@ function setup_circuit()
 // Plot / draw functions
 function plot_network_outputs()
 {
- 
+  scale_y_by_noise_model(); 
   test_circuit.plot_node(0, net_plot_len , net_left, net_h , net_t_scale, net_scale ) 
   test_circuit.plot_node(1, net_plot_len , net_left, net_h+dh , net_t_scale, net_scale ) 
   test_circuit.plot_node(2, net_plot_len , net_left, net_h+2*dh , net_t_scale, net_scale ) 
@@ -285,9 +315,10 @@ function plot_network_correlations(){
   //strokeWeight(2);
   //plot1DArray(ac, width/4, height -10, net_t_scale, 5*net_scale);
 }
+
+
+
 // UI Functions
-
-
 function keyPressed(){
   switch(key)
   {
@@ -297,6 +328,15 @@ function keyPressed(){
 
     case 'c':
       test_circuit.reset_nodes();
+      break;
+
+    case 'n':
+      transform_all_noise_gen( noise_gen_type_by_idx() );
+      break;
+    case 'N':
+      transform_all_noise_gen( noise_gen_type_by_idx() );
+      test_circuit.reset_nodes();
+      break;
 
     default:
       console.log( key );

@@ -6,8 +6,8 @@ function add_ui_node(node){
   all_ui_points.push(node)
 }
 
-function update_all_ui(){
-  all_ui_points.forEach( function(item,index){ item.update();item.over();} ); 
+function update_all_ui( force_param_update = false ){
+  all_ui_points.forEach( function(item,index){ item.update( force_param_update );item.over();} ); 
 }
 function show_all_ui(){
   all_ui_points.forEach( function(item,index){ item.show(); } ); 
@@ -214,10 +214,10 @@ class UINode extends Draggable {
     let val = this.getValue()
     this.draw_text( `${fnum(val.x)}, ${fnum(val.y)}` )
   }
-  update()
+  update( force_param_update = false)
   {
     super.update()
-    if (this.dragging)
+    if ((this.dragging) || (force_param_update))
     {
       // some alternate implementations here:
       // modeled after Alter the register function to take the object: http://www.bitstructures.com/2007/11/javascript-method-callbacks.html

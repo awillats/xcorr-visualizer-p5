@@ -1,13 +1,15 @@
 ## Explore the relationship between<br/>network structure and cross-correlations
 
 <details>
-<summary> Controls: </summary>
+<summary> Controls: </summary><p>
 
 |  |  |
 | ------:| :----------|
 | `space`: | pause / play |
 | `c`:     | clear the signal buffer |
+| `n`:     | switch to different noise model |
 
+</p>
 </details>
 
 
