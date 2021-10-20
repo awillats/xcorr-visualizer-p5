@@ -330,10 +330,10 @@ function keyPressed(){
       test_circuit.reset_nodes();
       break;
 
-    case 'n':
+    case 'N':
       transform_all_noise_gen( noise_gen_type_by_idx() );
       break;
-    case 'N':
+    case 'n':
       transform_all_noise_gen( noise_gen_type_by_idx() );
       test_circuit.reset_nodes();
       break;
