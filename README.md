@@ -20,15 +20,14 @@ but this project is small enough in scope, it's core pieces should be fine witho
 - impact of variances on identifiability depends strongly on...
   - which connection is being examined
   - inputs and outputs to that connection
-  - ( *stay tuned for a more general hypothesis on relationship between ground truth structure, variance, and Signal-to-noise ratio for Identifiability* )
-
-- how you normalize matters more when signals are more different from each other
+  - ( *stay tuned for a more general hypothesis on relationship between ground truth structure, variance, and Signal-to-noise ratio for Identifiability* )  
+- how you normalize matters more when signals are more different from each other  
   - (i.e. normalizing in reciprocal circuits)
   - buffer lenghts longer than ~2k(5k) significantly slow-down script
       - likely *computing* xcorr not rendering it
 
 ### Simple findings:
-- delay has predictable signature on xcorr 
+- delay has predictable signature on xcorr  
   - (if autocorr is minimal, influence is delta function)
 
 ## Repo organization
