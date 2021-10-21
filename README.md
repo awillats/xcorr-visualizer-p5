@@ -42,16 +42,19 @@ core files / UI:
 - `index.html` just handles page structure and imports 
 - `style.css` sets color scheme and text size 
 - `ui-node.js` used for interactive parameter sliders, extends `dragPoints` from [dynamics-visualizer-p5](https://github.com/awillats/dynamics-visualizer-p://github.com/awillats/dynamics-visualizer-p5)  
+
 notes:  
 - `README.md` landing page / intro
 - `TASKS.md` semi-organized to-do list
 - `DEVNOTES.md` unfiltered ramblings about what to do next  
+
 computational methods:
 - `signal-generation.js` generates random signals
   - has Gaussian, Poisson, and Perlin noise models for now
 - `signal-analysis.js` computes cross-correlations
 - `network-simulation.js` 
   - extends AdjMat from [circuit-visualizer-p5](https://github.com/awillats/circuit-visualizer-p5/blob/main/AdjMat.j://github.com/awillats/circuit-visualizer-p5/blob/main/AdjMat.js)   
+
 key libraries:
 - [p5js](https://p5js.org/) for graphics and interactivity
 - [numjs](https://github.com/nicolaspanel/numj ) for some math
