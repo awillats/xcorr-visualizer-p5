@@ -31,6 +31,23 @@ but this project is small enough in scope, it's core pieces should be fine witho
   - (if autocorr is minimal, influence is delta function)
 
 ## Repo organization
+core files / UI:  
+- `sketch.js` the heart of the demo
+- `index.html` just handles page structure and imports 
+- `style.css` sets color scheme and text size 
+- `ui-node.js` used for interactive parameter sliders, extends `DragPoint` from [dynamics-visualizer-p5]()
+notes:  
+- `README.md` landing page / intro
+- `TASKS.md` semi-organized to-do list
+- `DEVNOTES.md` unfiltered ramblings about what to do next
+computational methods:
+- `signal-generation.js` generates random signals
+  - has Gaussian, Poisson, and Perlin noise models for now
+- `signal-analysis.js` computes cross-correlations
+- `network-simulation.js` 
+  - extends AdjMat from [circuit-visualizer-p5]() 
+
+
 
 ## Related projects
 - 🕸️ circuit-visualizer-p5 [code](https://github.com/awillats/circuit-visualizer-p5), [demo](https://awillats.github.io/circuit-visualizer-p5/)
