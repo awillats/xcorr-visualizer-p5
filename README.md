@@ -34,6 +34,6 @@ but this project is small enough in scope, it's core pieces should be fine witho
 ## Repo organization
 
 ## Related projects
-- [circuit-visualizer-p5]()
-- [dynamics-visualizer-p5]()
+- 🕸️ circuit-visualizer-p5 [code](https://github.com/awillats/circuit-visualizer-p5), [demo](https://awillats.github.io/circuit-visualizer-p5/)
+- 🌀 dynamics-visualizer-p5 [code](https://github.com/awillats/dynamics-visualizer-p5), [demo](awillats.github.io/dynamics-visualizer-p5/)
 
