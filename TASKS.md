@@ -1,17 +1,17 @@
 [[ ]] connect UI to parameters
   (~) noise levels
     (~) gaussian - simple to specify 
-    ( ) can I easily swap out noise models???
-  🔊    (~) main difficulty is having some sense of scale consistent across modes
+    (~) can I easily swap out noise models???
+      (~) main difficulty is having some sense of scale consistent across modes
           (x) write a set_variance() method for each generator
-          ( ) do we need a different set of slider limits depending on the type? 
+          (-) do we need a different set of slider limits depending on the type? 
             lambda = 5.0 is much bigger than sigma=5.0 ??
         - gaussian: sigma
         - poisson: lambda 
         - multi-poisson: lambda, ( n=100 )
         - perlin: y-scale
-
-      ( ) what keys to use? menu box?
+      (~) what keys to use? menu box?
+      [ ] cycle through noise models rather than picking at random
   [[ ]] buffer length modification
     - may want separate xcorr buffer vs param buffer?
   [[ ]] clear xcorr buffer on paramter change?
@@ -29,14 +29,6 @@
     - 📅 [? ?] show history of xcorr w.r.t buffer length to give a sense of identifiability 
   ! ? would be nice to overlay control directly on the xcorr!
 
-[~] publish & polish
-  [x] get gh-pages up
-    - enable setting at github, done!
-  [~] add basic user guidance
-    (~) start with shortcuts panel
-      - minimum viable product for this is an explainer paragraph at the bottom
-    [~] [mr droob's showcase](https://mrdoob.com/#/112/branching) as inspiration
-      he just uses simple text prompt
 
 ~~~~~~~~~
 
@@ -51,7 +43,6 @@ is there any way to visualize contributions?
 
 [~] XCORR - {compute, normalize, plot}
   ( ) highlight causal lags  
-
   (! !) quantify instantaneous identifiability
     - coincidence index
 
@@ -60,7 +51,6 @@ is there any way to visualize contributions?
     [~] plot all xcorr
       - excise demo code (to demo.js?) to make room for xcorr matrix 
       - increase buffer length
-
   ( ) plot fixed-lag xcorr
     ( )  add scatterplot to plotFunctions.js
   (!) normalize cross-corr by autocorr
@@ -68,32 +58,27 @@ is there any way to visualize contributions?
     - timeflip as needed
 
 [~] generate strucutral network model 
+  ( ) add textbox interface
+  ( ) memoize unstable circuits? by saving flag for largest values per circuit
   [~] topological sorted weight matrix
     don't need topo sort if previous state is used for update
   [x] reciprocal conncections can work!  
   (?) figure out adj mat convention from circuit visualizer 
-  ( ) memoize unstable circuits? by saving flag for largest values per circuit
-  ( ) add textbox interface
 
 [~] generate signal buffers
-  [~] sketch out containers for signals 
   ( ) get sub buffer / view 
+  [~] sketch out containers for signals 
 	( ) figure out how `circuit-viz` does it
 
-[~] sketch out GUI elements
-  - see google photos
-  - container for 2D slider
-    - (~) refactor slider as extension of node
-    - (~) add additional linear slider
 
 [~] add edittable params
+  [ ] use meteor to plot history of parameter
   [x] constrained draggable points
   - fix step increment based on value *not* pixel coordinate
-  [ ] use meteor to plot history of parameter
  
 [x] add noise modes
-  - ( ) add selector
   - ( ) look for qualitative differences
+  - (~) add selector
   - [x] perlin
   - [x] gaussian
   - [x] (sum of) Poisson
@@ -103,6 +88,21 @@ is there any way to visualize contributions?
 	[x] set folders, helper scripts
 
 --- completed
+
+[~] sketch out GUI elements
+  - see google photos
+  - container for 2D slider
+    - (~) refactor slider as extension of node
+    - (~) add additional linear slider
+
+[~] publish & polish
+  [x] get gh-pages up
+    - enable setting at github, done!
+  [~] add basic user guidance
+    (~) start with shortcuts panel
+      - minimum viable product for this is an explainer paragraph at the bottom
+    [~] [mr droob's showcase](https://mrdoob.com/#/112/branching) as inspiration
+      he just uses simple text prompt
 
 implementaiton notes:
   [x] getValue is based on mouse OR unconstrained coordinates!
