@@ -7,7 +7,7 @@
 | ------:| :----------|
 | `space`: | pause / play |
 | `c`:     | clear the signal buffer |
-| `n`:     | switch to different noise model |
+| `n`:     | cycle through noise models |
 
 </p>
 </details>

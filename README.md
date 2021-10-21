@@ -32,6 +32,21 @@ View how correlations between outputs of small networks vary as a function of ci
   - buffer lenghts longer than ~2k(5k) significantly slow-down script
       - likely *computing* xcorr not rendering it
 
+- reciprocal circuits with STRONG-ish weights (0.6 < |w| < 1) ...>>
+  - circuit was A<=>B->C 
+      - w = 0.9, 0.8, -0.7
+      - |w| > 1 leads to instability
+  - exhibit harmonics in xcorr
+      - multiples of base syn. delay
+  - also have xcorr mirrored at positive and negative lags
+  - harmonics in autocorr bleed over, even into non-recurrent links!
+  - longer delays make harmonics easier to separate 
+  - resonance may put higher demand on proper normalization
+  - inhibitory weights are surprisingly similar to excitatory weights in this setting
+- reciprocal circuits with WEAK weights (0.1 < |w| < .6) ...>>
+    - confirmed for w = 0.2, 0.4
+  - xcorr behaves much more simply, can be interpretted much like non-reciprocal case 
+
 ### Simple findings:
 - delay has predictable signature on xcorr  
   - (if autocorr is minimal, influence is delta function)

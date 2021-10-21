@@ -4,10 +4,12 @@ let dark_purple;
 let net_t_scale;
 let net_scale;
 
-let test_circuit
+let test_circuit;
 let n_nodes = 3;
+let circuit_str; 
 
 let running = true;
+let noise_idx = 0;
 
 let md;
 let explainer_pg;
@@ -131,7 +133,7 @@ function draw_additional_text()
   textSize( parseFloat( get_style_prop('--label-text-size') ) )
   fill( get_style_prop('--subtle-text-color') )
   
-  text(`current circuit: A-> B-> C chain\n \n current noise model:\n${test_circuit.get_noise_type_str()}`, width/4, height*.7);
+  text(`circuit:\n${circuit_str}\n noise model:\n${test_circuit.get_noise_type_str()}`, width/4, height*.7);
  
 
   text('syn. weight', macro_slider_x, macro_slider_y-DY/2)
@@ -274,13 +276,15 @@ function set_node_noise_var(node_id, noise_val)
   test_circuit.set_node_noise_variance( node_id, noise_val )
 }
 
-function transform_all_noise_gen( new_noise_gen )
-{
-  test_circuit.transform_all_noise_gen( new_noise_gen );
+function transform_all_noise_gen( noise_idx = -1 )
+{ 
+  //should bundle noise_gen selection into test_circuit method?
+  test_circuit.transform_all_noise_gen( noise_gen_type_by_idx( noise_idx ) );
+  
+  //trigger parameter updates for all noise_gen to set to new vals
   noise_sliders.forEach( (s,idx) => set_node_noise_var( idx, s.getValue().y) );
   //press_all_ui();
   //update_all_ui( true );
-  //trigger parameter updates for all noise_gen to set to new vals
 }
 
 function setup_circuit(overall_weight = 1.0, overall_delay = 3)
@@ -291,11 +295,10 @@ function setup_circuit(overall_weight = 1.0, overall_delay = 3)
   //interesting reciprocal circuit:
   //test_circuit.weights.mat = nj.array( [[0,1,0],[1,0,-3],[0,0,0]]); //can this circuit handle reciprocal connections?
   //test_circuit.weights.scale( -0.75);
-/*
-  test_circuit.nodes.forEach( n=> {
-    n.noise_gen = new PerlinGenerator(dx=0.1, noise_scale=2.0)
-    });
-  */  
+  console.log( test_circuit.weights.export_to_str() );
+  circuit_str = test_circuit.weights.export_to_str()
+    //.replace('\n','  ')
+    //test_circuit.get_circuit_str();
 }
 
 
@@ -344,19 +347,6 @@ function plot_network_correlations(){
       plot_xcorr(j, i, dw*i, dh*j, k);
     }
   }
-  //plot_xcorr(0,1, 0);
-  //plot_xcorr(1,2, dh);
-  //plot_xcorr(0,2, 2*dh);
-/*
-  let xcd = get_middle( get_autocrosscorr( 0, 1, 0), xc_len );
-  let xcd2 = get_middle(get_autocrosscorr( 1, 2, 2), xc_len );
-  
-  plot1DArray(xcd, corr_left , corr_h , corr_t_scale , 20*net_scale);
-  plot1DArray(xcd2, corr_left , corr_h+dh , corr_t_scale , 20*net_scale);
-  */
-  //stroke(255);
-  //strokeWeight(2);
-  //plot1DArray(ac, width/4, height -10, net_t_scale, 5*net_scale);
 }
 
 
@@ -374,10 +364,10 @@ function keyPressed(){
       break;
 
     case 'N':
-      transform_all_noise_gen( noise_gen_type_by_idx() );
+      transform_all_noise_gen( ++noise_idx );
       break;
     case 'n':
-      transform_all_noise_gen( noise_gen_type_by_idx() );
+      transform_all_noise_gen( ++noise_idx );
       test_circuit.reset_nodes();
       break;
 

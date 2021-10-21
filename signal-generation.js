@@ -197,7 +197,8 @@ class MultiPoissonGenerator extends PoissonGenerator {
 
 }
 
-function noise_gen_type_by_idx( idx = -1)
+// move this function into SignalGenerator?
+function noise_gen_type_by_idx( idx = -1 )
 {
   //to avoid having to clone objects
   //this only returns the function for generating the noise gen object
@@ -207,6 +208,7 @@ function noise_gen_type_by_idx( idx = -1)
     () => new MultiPoissonGenerator(),
     () => new PerlinGenerator(),
   ];
+  idx = idx % noise_gen_funs.length;
 
   let this_ngf = (idx<0 ? random(noise_gen_funs) : noise_gen_funs[idx] ) ;
   return this_ngf;

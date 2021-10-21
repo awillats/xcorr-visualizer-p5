@@ -35,6 +35,42 @@ class CircuitMat{
     if (v != 0) { this.scale(v) }
     else { this.scale( minscale) }
   }
+  export_to_str(mat = null, node_name_f = null)
+  {
+    // largely copied from:
+    // https://github.com/awillats/circuit-visualizer-p5/blob/1ef9d4fef6f7c2c1b969f6feb4bd9c4726d01e11/sketch.js#L455)
+    //intended to work on NumJS matrices
+    // would be nice to denote bidirectional connections like: A<=>B
+    //
+    mat = (mat == null ? this.mat : mat);
+    if (node_name_f == null)
+    {
+      //default should be 0,1,2 => a,b,c
+      node_name_f = (i) => String.fromCharCode(97 + i).toUpperCase();
+    }
+    
+    let mat_str = '';
+    //iterate across rows of mat
+    for (let r = 0; r < mat.shape[0]; r++)
+    {
+      // write one string that summarizes all outputs of a given node:
+      // a->b,c,d 
+      let col_str_from = `${node_name_f( r )}→`
+      let col_str_to = '';
+      for (let c = 0; c< mat.shape[1]; c++)
+      {
+         if ( mat.get( r, c ) ){
+            col_str_to += `${node_name_f( c )},`
+          }
+      }
+      if (col_str_to.length > 0){
+        //slice removes , from final to-string
+        mat_str += `${col_str_from}${col_str_to.slice(0, -1)}\n`
+      }
+    } 
+    return mat_str;
+    
+  }
 }
 
 class NetNode{
