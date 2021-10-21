@@ -22,7 +22,7 @@ let overall_weight ;
 let net_weights = [];
 let net_noises = [];
 */
-
+let w_slider, d_slider;
 let noise_sliders ;
 let weight_sliders ;
 let delay_sliders ;
@@ -92,7 +92,7 @@ function setup()
   */
 
   sim_speed = 4;
-  DEFAULT_W = 1.0;
+  DEFAULT_W = 0.9;
   DEFAULT_D = 3;
   xc_len = 24;
   setup_circuit();
@@ -120,8 +120,8 @@ function setup_explainer_pg()
   explainer_txt
   var result = md.render(explainer_txt.join('\n'));
   result = wrap_html_color(result, high_color);
-    //'rgb(120,10,80)')
-    console.log( high_color );
+  //'rgb(120,10,80)')
+  //console.log( high_color );
   explainer_pg.elt.innerHTML = result;
 }
 
@@ -253,16 +253,16 @@ function setup_gui_params()
   let reweight_f = (w) => test_circuit.set_nonzero_weights(w)
   let redelay_f = (d) => test_circuit.set_nonzero_delays(d)
 
-  let w_slider = new Slider1D( macro_slider_x,                 macro_slider_y, macro_slider_w, false)
-  w_slider.set_constraints( new LinearConstraint(-3.5, 3.5) )
+  w_slider = new Slider1D( macro_slider_x,                 macro_slider_y, macro_slider_w, false)
+  w_slider.set_constraints( new LinearConstraint(-2.5, 2.5) )
   w_slider.set_value( DEFAULT_W );
   w_slider.set_origin( w_slider.position_constraints.center() )
   w_slider.ondrag_callbacks.push( () => {
     reweight_f( w_slider.pos( w_slider.getValue() ) );
   });
 
-  let d_slider = new Slider1D( macro_slider_x+2*macro_slider_dw, macro_slider_y, macro_slider_w, false)
-  d_slider.set_constraints( new LinearConstraint(0, 8) )
+  d_slider = new Slider1D( macro_slider_x+2*macro_slider_dw, macro_slider_y, macro_slider_w, false)
+  d_slider.set_constraints( new LinearConstraint(0, 8, 1) )
   d_slider.set_value( DEFAULT_D )
   d_slider.ondrag_callbacks.push( () => redelay_f( d_slider.pos( d_slider.getValue()) ) );
 
@@ -330,11 +330,23 @@ function plot_network_correlations(){
     plot1DArray(xc, corr_left + dx, corr_h + dy, corr_t_scale, corr_y_scale); 
 
     push();
-    strokeWeight(2);
+    strokeWeight(3);
     //stroke(255);
     stroke( get_style_prop('--ui-face-color') );
-    let midx = corr_left + dx + (xc_len* corr_t_scale/net_t_scale)/2
-    line( midx, corr_h+dy, midx, corr_h+dy-dh*.7);
+
+    let lag_to_pix =  corr_t_scale/net_t_scale
+    let midx = corr_left + dx + (xc_len * lag_to_pix)/2
+    let y_axis_bottom = corr_h + dy
+    let y_axis_top = corr_h + dy - dh*0.7
+    line(midx, y_axis_bottom, midx, y_axis_top);
+
+    // plot additional ticks to mark circuit delays 
+    // where we expect XCorr peaks if there's a connection
+    strokeWeight(2);
+    let current_delay = d_slider.pos( d_slider.getValue() )
+    line(midx - current_delay * lag_to_pix , y_axis_top + 5, midx - current_delay * lag_to_pix , y_axis_top);
+    strokeWeight( 0.5 );
+    line(midx - 2*current_delay * lag_to_pix , y_axis_top + 5, midx - 2*current_delay * lag_to_pix , y_axis_top);
     pop();
   }
 

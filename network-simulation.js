@@ -47,6 +47,8 @@ class CircuitMat{
     {
       //default should be 0,1,2 => a,b,c
       node_name_f = (i) => String.fromCharCode(97 + i).toUpperCase();
+      let name_to_index_f = (n) => n.toLowerCase().charCodeAt(0)-97;
+      //case insensitive
     }
     
     let mat_str = '';
@@ -226,7 +228,7 @@ function gen_diag(v, k=0)
   else{
     v.forEach( (x,i)=> mat.set(i,i-k,x));
   }
-  print_mat(mat);
+  //print_mat(mat);
   return mat;
 }
 

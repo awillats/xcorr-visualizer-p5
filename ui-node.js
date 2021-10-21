@@ -252,7 +252,6 @@ class Slider1D extends UINode {
       this.position_constraints = pos_con;
     }
     
-    
     //let con_min = this.position_constraints.max;
     let xo = (this.is_vertical ? this.x : this.position_constraints.min );
     let yo = (this.is_vertical ? this.position_constraints.max : this.y );
@@ -260,6 +259,11 @@ class Slider1D extends UINode {
 
     this.xScale = this.value_constraints.range()/this.position_constraints.range()
     this.yScale = -this.value_constraints.range()/this.position_constraints.range()
+
+    if (!pos_con){
+      this.position_constraints.step = this.value_constraints.step / this.pos(this.xScale, this.yScale)
+    }
+
   }
   set_origin(x=null, y=null)
   {
@@ -312,8 +316,6 @@ class Slider1D extends UINode {
     {
       this.x = this.value_constraints.mapval(v, this.position_constraints.min, this.position_constraints.max);
     }
-    console.log(this.x)
-    console.log(this.y)
   }
   show(){
     push()
