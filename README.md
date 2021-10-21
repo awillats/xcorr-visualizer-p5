@@ -1,7 +1,13 @@
+# [Cross-Correlation (xcorr) Visualizer](https://awillats.github.io/xcorr-visualizer-p5/)
 
 🚧  Work in progress 🚧  
 View how correlations between outputs of small networks vary as a function of circuit parameters
 ![preview of interface](assets/example_screenshot.png)
+
+Try the [demo here](https://awillats.github.io/xcorr-visualizer-p5/),  
+- click `controls` to see how to change settings
+- consider hitting `c` after major parameter changes to refresh the cross-correlation,
+  - otherwise the results will be a mix of the last N samples
 
 ## Upcoming Features: 🔮
 - [ ] Computing ["coincidence index"](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0027431) as a measure of connectivity
