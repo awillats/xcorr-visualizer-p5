@@ -9,7 +9,7 @@ Try the [demo here](https://awillats.github.io/xcorr-visualizer-p5/),
   - the strength of these connections is set by the weight slider 
   - these connections are delayed according to the delay slider
   - additive noise is injected at each noise, with it's magnitude set by the sliders for each row
-- peaks in cross-correlation at negative time-lags can indicate a directional dependence from node i to node j ⚠️*(causality not guaranteed)*⚠️
+- peaks in cross-correlation at negative time-lags can indicate a directional dependence from node i to node j ⚠️ *(causality not guaranteed)* ⚠️
   - how do parameters such as noise levels impact the clarity of these xcorr peaks?
   - look for peaks in xcorr for connections which aren't in the network
     - how could these be distinguished from "true" direct connections?
