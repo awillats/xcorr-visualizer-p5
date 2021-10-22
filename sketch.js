@@ -294,6 +294,8 @@ function setup_circuit(overall_weight = 1.0, overall_delay = 3)
   // debug circuits:
 
   //interesting reciprocal circuit:
+  //test_circuit.weights.mat.set(0, 0, 1);
+  //test_circuit.weights.mat.set(2, 2, 1);
   //test_circuit.weights.mat = nj.array( [[0,1,0],[1,0,-3],[0,0,0]]); //can this circuit handle reciprocal connections?
   //test_circuit.weights.mat = nj.array( [[0,1,1],[0,0,-3],[1,1,0]]); //can this circuit handle reciprocal connections?
   //test_circuit.weights.scale( -0.75);
@@ -312,6 +314,12 @@ function plot_network_edges()
   let base_v = createVector(arrow_right, net_h)
   let down_v = createVector(0, dh)
   let up_v = down_v.copy().mult(-1);//createVector(0, -dh)
+
+  let self_arc_angle = (8/6) * PI; //between 0 and PI/2
+  let arc_arrow_len = 5
+  let self_arc_angle_off = PI/9;
+
+  let del_arc_angle = (self_arc_angle-PI)/2;
   //https://github.com/awillats/circuit-visualizer-p5/blob/6499bf8d79921cad9401ddf529dc5811661c6787/plotFuns.js/#L145
   for (let r=0; r<n_nodes; r++)
   {
@@ -326,8 +334,15 @@ function plot_network_edges()
           //draw self loop
           noFill();
           stroke( arrow_color );
-          ellipse( r_x, r_y, DY/2);
-          
+          //ellipse( r_x, r_y, DY/2);
+          arc( r_x, r_y-DY/3, DY/3, DY/3, PI-del_arc_angle + self_arc_angle_off, del_arc_angle+self_arc_angle_off)
+          push()
+          translate(r_x, r_y-DY/3)
+          rotate(PI/2-del_arc_angle + self_arc_angle_off ) //+2*self_arc_angle_off)
+          translate(0, DY/6);
+
+          triangle(0,arc_arrow_len/3, 0,-arc_arrow_len/3, arc_arrow_len,0)
+          pop()
         }
         else
         {
