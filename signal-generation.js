@@ -180,7 +180,7 @@ class MultiPoissonGenerator extends PoissonGenerator {
     super(lambda);
     this.n = n;
     this.do_avg = do_avg;
-    this.type_str = `${n} Avergaed Poisson`
+    this.type_str = `${n} Averaged Poisson`
   }
   gen_sample( do_avg = null)
   {
