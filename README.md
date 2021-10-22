@@ -33,7 +33,7 @@ Try the [demo here](https://awillats.github.io/xcorr-visualizer-p5/),
      - for now, Perlin noise setting reasonably approximates nodes with autoregression
 ## Highly-relevant publications: 
 - [How Connectivity, Background Activity, and Synaptic Properties Shape the Cross-Correlation between Spike Trains](https://www.jneurosci.org/content/29/33/10234) Srdjan Ostojic, Nicolas Brunel and Vincent Hakim (2009)
-- [Connectivity inference from neural recording data: Challenges, mathematical bases and research directions](https://www.sciencedirect.com/science/article/pii/S0893608018300704#b122) de Abril et al. (2018)
+- [Connectivity inference from neural recording data: Challenges, mathematical bases and research directions](https://www.sciencedirect.com/science/article/pii/S0893608018300704#b122) Ildefons Magrans de Abril, Junichiro Yoshimoto, Kenji Doya (2018)
 - [Evaluation of the Performance of Information Theory-Based Methods and Cross-Correlation to Estimate the Functional Connectivity in Cortical Networks](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0006482) Garofalo et al. (2009)
 
 ## known minor bugs: 🐞
