@@ -9,8 +9,9 @@ View how correlations between outputs of small networks vary as a function of ci
   - highlight significant connections   
   - add axis labels for xcorr lags
 - [ ] Edittable circuit structure ( see [circuit-visualizer-p5]()https://github.com/awillats/circuit-visualizer-p5)
-  - [ ] better visualization of current circuit structure 
-- [ ] Dropdown menu for noise models
+  - [x] better visualization of current circuit structure 
+- [~] Dropdown menu for noise models
+    - for now, cycle through with `n`
 - [ ] Edittable buffer length for cross-correlation
 - [ ] Exportable quantitative results
 - [ ] include autoregressive dynamics

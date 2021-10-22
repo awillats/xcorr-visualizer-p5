@@ -92,7 +92,7 @@ function setup()
   */
 
   sim_speed = 4;
-  DEFAULT_W = 0.9;
+  DEFAULT_W = 0.1;
   DEFAULT_D = 3;
   xc_len = 24;
   setup_circuit();
@@ -170,6 +170,7 @@ function draw()
   plot_network_outputs();
   plot_network_correlations();
 
+  plot_network_edges();
   pop()
 }
 
@@ -294,6 +295,7 @@ function setup_circuit(overall_weight = 1.0, overall_delay = 3)
 
   //interesting reciprocal circuit:
   //test_circuit.weights.mat = nj.array( [[0,1,0],[1,0,-3],[0,0,0]]); //can this circuit handle reciprocal connections?
+  //test_circuit.weights.mat = nj.array( [[0,1,1],[0,0,-3],[1,1,0]]); //can this circuit handle reciprocal connections?
   //test_circuit.weights.scale( -0.75);
   console.log( test_circuit.weights.export_to_str() );
   circuit_str = test_circuit.weights.export_to_str()
@@ -303,6 +305,53 @@ function setup_circuit(overall_weight = 1.0, overall_delay = 3)
 
 
 // Plot / draw functions
+function plot_network_edges()
+{
+  let arrow_color = get_style_prop( '--subtle-text-color' )
+  let arrow_right = net_left - DY/4;
+  let base_v = createVector(arrow_right, net_h)
+  let down_v = createVector(0, dh)
+  let up_v = down_v.copy().mult(-1);//createVector(0, -dh)
+  //https://github.com/awillats/circuit-visualizer-p5/blob/6499bf8d79921cad9401ddf529dc5811661c6787/plotFuns.js/#L145
+  for (let r=0; r<n_nodes; r++)
+  {
+    for (let c = 0; c<n_nodes; c++)
+    {
+      if (test_circuit.weights.mat.get(r,c))
+      {
+        let r_y = net_h + r*dh;
+        let r_x = net_left-DY/2+2;
+        if (r==c)
+        {
+          //draw self loop
+          noFill();
+          stroke( arrow_color );
+          ellipse( r_x, r_y, DY/2);
+          
+        }
+        else
+        {
+          if (r < c)
+          {
+            //draw arrow on right and down
+            r_x += DY/4;
+          }
+          if (r > c)
+          {
+            //draw arrow on left and up
+            r_x -= DY/4;
+          }
+          
+          drawCurveArrow( createVector(r_x, r_y + Math.sign(c-r)*dh*.1 ),
+                          createVector(0, (c-r)*dh - Math.sign(c-r)*dh*.2), 
+                          arrow_color );
+        }
+      }
+    }
+  }
+  //drawCurveArrow(base_v, down_v)
+  //line(base_v.x, base_v.y, end_v.x, end_v.y)
+}
 function plot_network_outputs()
 {
   scale_y_by_noise_model(); 

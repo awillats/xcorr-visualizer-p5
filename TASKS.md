@@ -10,8 +10,10 @@
       - excise demo code (to demo.js?) to make room for xcorr matrix 
       - increase buffer length
   ( ) plot fixed-lag xcorr
-    ( )  add scatterplot to plotFunctions.js
+   - toggleable views?
+   ( )  add scatterplot to plotFunctions.js
   (!) normalize cross-corr by autocorr
+    - be sure to try normalization strategies on reciprocal circuit
     - plot both normalizations!
     - timeflip as needed
 
@@ -72,6 +74,9 @@ is there any way to visualize contributions?
 
 ~~~~~~~~~~
 [~] generate strucutral network model 
+  [ ] plot network edges (linear version?)
+    - ( ) look at curved arrows from circuit-viz
+    - drawCurveArrow in cv/plotFuns.js
   ( ) add textbox interface
   ( ) memoize unstable circuits? by saving flag for largest values per circuit
     ( ) instability detector
