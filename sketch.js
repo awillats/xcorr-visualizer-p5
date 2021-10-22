@@ -370,15 +370,14 @@ function plot_network_edges()
 function plot_network_outputs()
 {
   scale_y_by_noise_model(); 
-  test_circuit.plot_node(0, net_plot_len , net_left, net_h , net_t_scale, net_scale ) 
-  test_circuit.plot_node(1, net_plot_len , net_left, net_h+dh , net_t_scale, net_scale ) 
+  test_circuit.plot_node(0, net_plot_len , net_left, net_h      , net_t_scale, net_scale ) 
+  test_circuit.plot_node(1, net_plot_len , net_left, net_h+dh   , net_t_scale, net_scale ) 
   test_circuit.plot_node(2, net_plot_len , net_left, net_h+2*dh , net_t_scale, net_scale ) 
 }
-function plot_network_correlations(){
 
+function plot_network_correlations(){
   stroke(dark_purple);
   strokeWeight(2);
-
   
   function plot_xcorr(i,j, dx=0, dy=0, k=i)
   {
@@ -433,6 +432,14 @@ function keyPressed(){
   {
     case ' ':
       running = !running;
+      break;
+
+    case 'r':
+      test_circuit.weights.randomize_connectivity(2/9);
+      test_circuit.weights.set_nonzero_to( w_slider.pos( w_slider.getValue() ) )
+      circuit_str = test_circuit.weights.export_to_str()
+
+      test_circuit.reset_nodes();
       break;
 
     case 'c':

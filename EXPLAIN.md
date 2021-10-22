@@ -6,8 +6,9 @@
 |  |  |
 | ------:| :----------|
 | `space`: | pause / play |
-| `c`:     | clear the signal buffer |
+| `r`:     | randomize circuit connections |
 | `n`:     | cycle through noise models |
+| `c`:     | clear the signal buffer |
 
 </p>
 </details>

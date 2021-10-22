@@ -35,6 +35,14 @@ class CircuitMat{
     if (v != 0) { this.scale(v) }
     else { this.scale( minscale) }
   }
+
+  randomize_connectivity( pConnect )
+  {
+    let m = new AdjMat(this.n_nodes);
+    this.mat = nj.array( m.createSparseAdj(pConnect) )
+  }
+
+
   export_to_str(mat = null, node_name_f = null)
   {
     // largely copied from:
