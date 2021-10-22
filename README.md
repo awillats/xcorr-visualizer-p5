@@ -31,6 +31,9 @@ Try the [demo here](https://awillats.github.io/xcorr-visualizer-p5/),
 - [ ] Exportable quantitative results
 - [ ] include autoregressive dynamics
      - for now, Perlin noise setting reasonably approximates nodes with autoregression
+## Highly-relevant publications: 
+- [How Connectivity, Background Activity, and Synaptic Properties Shape the Cross-Correlation between Spike Trains](https://www.jneurosci.org/content/29/33/10234) Srdjan Ostojic, Nicolas Brunel and Vincent Hakim (2009)
+
 
 ## known minor bugs: 🐞
 - occasional visual glitch with cross-correlations
